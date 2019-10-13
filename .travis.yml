@@ -4,6 +4,5 @@ node_js:
 
 deploy:
   provider: surge
-  domain: krykkeCA2.surge.sh
 
 script: echo 'This line disables tests.'
