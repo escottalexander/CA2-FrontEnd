@@ -1,6 +1,9 @@
-yml language: node_js 
-node_js: - "0.12" - "node"
-install: npm install
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+    - node_modules
 
 before_deploy:
   - npm run build
