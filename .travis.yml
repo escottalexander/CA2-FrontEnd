@@ -1,5 +1,6 @@
 before_deploy:
   - npm run build
+  - tar czvf build.tar.gz -C build .
 deploy:
   - provider: pages
     skip_cleanup: true # Don't re-run the tests
@@ -9,5 +10,15 @@ deploy:
     on:
       tags: true
       branch: master
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file: "./build.tar.gz"
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
+  - provider: surge
+    project: ./build/
+    skip_cleanup: true
 
 script: echo 'This line disables tests.'
