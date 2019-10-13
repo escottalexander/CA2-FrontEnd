@@ -1,4 +1,5 @@
 # From FrontEnd Startcode
+/node_modules
 node_modules
 build**/target/
 **/target/
