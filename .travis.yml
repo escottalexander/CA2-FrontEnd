@@ -1,3 +1,8 @@
+language: node_js
+node_js:
+  - "8"
+install: npm install
+
 before_deploy:
   - npm run build
   - tar czvf build.tar.gz -C build .
@@ -21,4 +26,6 @@ deploy:
     project: ./build/
     skip_cleanup: true
 
-script: echo 'This line disables tests.'
+script:
+  - npm run build
+  - echo 'This line disables tests.'
