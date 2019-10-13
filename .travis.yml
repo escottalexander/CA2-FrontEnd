@@ -1,8 +1,13 @@
-language: node_js
-node_js:
-  - "6"
-
+before_deploy:
+  - npm run build
 deploy:
-  provider: surge
+  - provider: pages
+    skip_cleanup: true # Don't re-run the tests
+    github_token: $GITHUB_TOKEN
+    keep_history: true
+    local_dir: build
+    on:
+      tags: true
+      branch: master
 
 script: echo 'This line disables tests.'
