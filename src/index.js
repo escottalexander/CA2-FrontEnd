@@ -1,8 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import jokes from "./jokes";
 
-const allJokes = jokes.getJokes().map(joke => "<li>"+joke+"</li>");
-document.getElementById("jokes").innerHTML = allJokes.join("");
+const url = 'https://maltemagnussen.com/CA2/api/search/';
+
+function handleHttpErrors(res) {
+    if (!res.ok) {
+        return Promise.reject({ status: res.status, fullError: res.json() })
+    }
+    return res.json();
+}
 
 
 
