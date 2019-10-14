@@ -14,14 +14,14 @@ function handleHttpErrors(res) {
 
 function fillViewPersonWithDataDiv() {
     let ptag = document.createElement('p');
-    ptag.classList.add('ViewPersonWithDataPTAG');
+    ptag.classList.add('viewPersonWithDataPTAG');
     let inputtag = document.createElement('input');
-    inputtag.classList.add('ViewPersonWithDataInputTAG');
+    inputtag.classList.add('viewPersonWithDataInputTAG');
     inputtag.setAttribute('type', 'text');
     inputtag.setAttribute('placeholder', 'UserName');
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get User';
-    buttontag.classList.add('ViewPersonWithDataButtonTAG');
+    buttontag.classList.add('viewPersonWithDataButtonTAG');
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
     div.appendChild(inputtag);
@@ -29,18 +29,18 @@ function fillViewPersonWithDataDiv() {
     div.appendChild(ptag);
 }
 
-document.getElementById("ViewPersonWithDataButtonTAG").addEventListener('click', function (event) {
+document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
     event.preventDefault();
     singleuser();
 });
 
 function singleuser() {
-    let username = document.getElementById('ViewPersonWithDataInputTAG').value;
+    let username = document.getElementById('viewPersonWithDataInputTAG').value;
     if(!username){
-        document.getElementById('ViewPersonWithDataPTAG').innerHTML = 'Type in a name'
+        document.getElementById('viewPersonWithDataInputTAG').innerHTML = 'Type in a name'
     }
     else{
-        let urlName = url + username;
+        let urlName = url + '/person/' + username;
 
     fetch(urlName)
         .then(handleHttpErrors)
