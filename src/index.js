@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
-    /*---------- End Get Person By Name ----------*/
+        /*---------- End Get Person By Name ----------*/
     });
 });
 
@@ -24,15 +24,19 @@ function handleHttpErrors(res) {
 /*---------------------------------------------*/
 
 function fillViewPersonWithDataDiv() {
+    
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewPersonWithDataPTAG');
+
     let inputtag = document.createElement('input');
     inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
     inputtag.setAttribute('type', 'text');
     inputtag.setAttribute('placeholder', 'UserName');
+
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get User';
     buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
+
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
     div.appendChild(inputtag);
@@ -41,6 +45,7 @@ function fillViewPersonWithDataDiv() {
 }
 
 /*---------- Not used yet ---------*/
+/*---- To clear the div of data ---*/
 function emptyViewPersonWithDataDiv() {
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
@@ -56,7 +61,24 @@ function singleuser() {
         fetch(urlName)
             .then(handleHttpErrors)
             .then(jsondata => {
-                document.getElementById('viewPersonWithDataPTAG').innerHTML = JSON.stringify(jsondata);
+                let person = jsondata[0];
+                let hobbies = '';
+                person['hobbies'].forEach(element => {
+                    hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
+                });
+                let phones = '';
+                person['phones'].forEach(element => {
+                    phones = phones + '<br>' + element.description + ': ' + element.number;
+                });
+
+                document.getElementById('viewPersonWithDataPTAG').innerHTML =
+                   "<br>Firstname: " + person['firstName'] + ' '+ person['lastName']
+                  + "<br>e-mail: " + person['email']
+                  + "<br>Address: " + person['address']['street'] + ', '
+                  + person['address']['additionalInfo'] + ', ' + person['address']['cityInfo']['zipCode'] 
+                  + ' ' + person['address']['cityInfo']['city']
+                  + "<br>Hobbies: " + hobbies
+                  + "<br>Phones: " + phones;
             })
             .catch(err => {
                 if (err.status) {
