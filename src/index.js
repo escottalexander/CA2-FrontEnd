@@ -1,4 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
+document.addEventListener("DOMContentLoaded", function () {
+    fillViewPersonWithDataDiv();
+});
 
 const url = 'https://maltemagnussen.com/CA2/api/search/';
 
@@ -10,6 +13,8 @@ function handleHttpErrors(res) {
 }
 
 function fillViewPersonWithDataDiv() {
+    alert('test');
+    alert('hat');
     let ptag = document.createElement('p');
     ptag.classList.add('ViewPersonWithDataPTAG');
     let inputtag = document.createElement('input');
@@ -25,19 +30,24 @@ function fillViewPersonWithDataDiv() {
     div.appendChild(ptag);
 }
 
+document.getElementById("ViewPersonWithDataButtonTAG").addEventListener('click', function (event) {
+    event.preventDefault();
+    singleuser();
+});
+
 function singleuser() {
-    let id = document.getElementById('useridinput').value;
-    if(!id){
-        document.getElementById('singleuser').innerHTML = 'Type in an ID'
+    let username = document.getElementById('ViewPersonWithDataInputTAG').value;
+    if(!username){
+        document.getElementById('ViewPersonWithDataPTAG').innerHTML = 'Type in a name'
     }
     else{
-        let urlID = 'http://localhost:3333/api/users/' + id;
+        let urlName = url + username;
 
-    fetch(urlID)
+    fetch(urlName)
         .then(handleHttpErrors)
         .then(jsondata => {
             getUserToEdit(jsondata);
-            document.getElementById('singleuser').innerHTML = JSON.stringify(jsondata);
+            document.getElementById('ViewPersonWithDataPTAG').innerHTML = JSON.stringify(jsondata);
         })
         .catch(err => {
             if (err.status) {
