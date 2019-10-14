@@ -13,8 +13,6 @@ function handleHttpErrors(res) {
 }
 
 function fillViewPersonWithDataDiv() {
-    alert('test');
-    alert('hat');
     let ptag = document.createElement('p');
     ptag.classList.add('ViewPersonWithDataPTAG');
     let inputtag = document.createElement('input');
@@ -22,7 +20,8 @@ function fillViewPersonWithDataDiv() {
     inputtag.setAttribute('type', 'text');
     inputtag.setAttribute('placeholder', 'UserName');
     let buttontag = document.createElement('button');
-    inputtag.classList.add('ViewPersonWithDataButtonTAG');
+    buttontag.innerHTML = 'Get User';
+    buttontag.classList.add('ViewPersonWithDataButtonTAG');
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
     div.appendChild(inputtag);
