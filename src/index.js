@@ -14,7 +14,7 @@ function handleHttpErrors(res) {
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
 
-var output = document.getElementById("output");
+var output = document.getElementById("outputPersonSimple");
 
 var buttonAddSimple = document.getElementById("createSimplePerson");
 
@@ -38,9 +38,9 @@ buttonAddSimple.addEventListener("click", function(){
 })
 
 function createPersonOptions(){
-    var FirstName = document.getElementById("inputFirstName").value;
-    var LastName = document.getElementById("inputLastName").value;
-    var Email = document.getElementById("inputEmail").value;
+    var FirstName = document.getElementById("inputFirstNamePersonSimple").value;
+    var LastName = document.getElementById("inputLastNamePersonSimple").value;
+    var Email = document.getElementById("inputEmailPersonSimple").value;
     var Method = "POST";
     var data = {
         firstName : FirstName,
@@ -64,3 +64,14 @@ function createPersonOptions(){
 /*----------- End Add Person Simple -----------*/
 /*---------------------------------------------*/
 
+
+/*---------------------------------------------*/
+/*------------- Begin  Create All -------------*/
+/*---------------------------------------------*/
+
+
+
+
+/*---------------------------------------------*/
+/*-------------- End  Create All --------------*/
+/*---------------------------------------------*/
