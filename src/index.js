@@ -28,7 +28,7 @@ function fillViewPersonWithDataDiv() {
     
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewPersonWithDataPTAG');
-    
+
     let inputtag = document.createElement('input');
     inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
     inputtag.setAttribute('type', 'text');
