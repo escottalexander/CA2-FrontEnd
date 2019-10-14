@@ -8,6 +8,7 @@ function handleHttpErrors(res) {
     }
     return res.json();
 }
-console.log("Am i live?");
+
+
 
 
