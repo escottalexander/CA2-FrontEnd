@@ -9,5 +9,17 @@ function handleHttpErrors(res) {
     return res.json();
 }
 
+function fillViewPersonWithDataDiv() {
+    let ptag = document.createElement('p');
+    ptag.classList.add('ViewPersonWithDataPTAG');
+    let inputtag = document.createElement('input');
+    inputtag.classList.add('ViewPersonWithDataInputTAG');
+    inputtag.setAttribute('type', 'text');
+    inputtag.setAttribute('placeholder', 'UserName');
+    let div = document.getElementById("viewPersonWithData");
+    div.innerHTML = "";
+    div.appendChild(inputtag);
+    div.appendChild(ptag);
+}
 
 
