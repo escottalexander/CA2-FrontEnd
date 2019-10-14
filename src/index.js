@@ -53,7 +53,6 @@ function singleuser() {
     }
     else {
         let urlName = url + 'person/' + username;
-        alert(urlName);
         fetch(urlName)
             .then(handleHttpErrors)
             .then(jsondata => {
