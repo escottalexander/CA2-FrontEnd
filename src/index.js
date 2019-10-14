@@ -14,7 +14,7 @@ function handleHttpErrors(res) {
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
 
-var output = document.getElementById("outputPersonSimple");
+var outputPersonSimple = document.getElementById("outputPersonSimple");
 
 var buttonAddSimple = document.getElementById("createSimplePerson");
 
@@ -23,7 +23,7 @@ buttonAddSimple.addEventListener("click", function(){
     .then(res => handleHttpErrors(res))
     .then(function(data) {
         console.log(data);
-        output.innerHTML = "<p>Person created:</p><br>"
+        outputPersonSimple.innerHTML = "<p>Person created:</p><br>"
         + "<p>ID: " + data.id + "<br>"
         + "<p>First name: " + data.firstName + "<br>"
         + "<p>Last name: " + data.lastName + "<br>"
@@ -31,7 +31,7 @@ buttonAddSimple.addEventListener("click", function(){
     })
     .catch(err => {
         if(err.status){
-          err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+          err.fullError.then(e => outputPersonSimple.innerHTML = "Error:<br><br>")
         }
         else{console.log("Network error"); }
      });
