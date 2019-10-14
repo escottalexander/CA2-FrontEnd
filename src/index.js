@@ -1,10 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.css'
 document.addEventListener("DOMContentLoaded", function () {
+    /*---------- Begin Get Person By Name ---------*/
+    /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
-    // document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
-    //     event.preventDefault();
-    //     singleuser();
-    // });
+    document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        singleuser();
+    /*---------- End Get Person By Name ----------*/
+    });
 });
 
 const url = 'https://maltemagnussen.com/CA2/api/search/';
@@ -15,6 +18,10 @@ function handleHttpErrors(res) {
     }
     return res.json();
 }
+
+/*---------------------------------------------*/
+/*---------- Begin Get Person By Name ---------*/
+/*---------------------------------------------*/
 
 function fillViewPersonWithDataDiv() {
     let ptag = document.createElement('p');
@@ -33,30 +40,24 @@ function fillViewPersonWithDataDiv() {
     div.appendChild(ptag);
 }
 
+/*---------- Not used yet ---------*/
 function emptyViewPersonWithDataDiv() {
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
 }
 
-document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
-  event.preventDefault();
-   singleuser();
-});
-
 function singleuser() {
-    alert(hat);
     let username = document.getElementById('viewPersonWithDataInputTAG').value;
     if (!username) {
-        document.getElementById('viewPersonWithDataInputTAG').innerHTML = 'Type in a name'
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
     }
     else {
-        let urlName = url + '/person/' + username;
-
+        let urlName = url + 'person/' + username;
+        alert(urlName);
         fetch(urlName)
             .then(handleHttpErrors)
             .then(jsondata => {
-                getUserToEdit(jsondata);
-                document.getElementById('ViewPersonWithDataPTAG').innerHTML = JSON.stringify(jsondata);
+                document.getElementById('viewPersonWithDataPTAG').innerHTML = JSON.stringify(jsondata);
             })
             .catch(err => {
                 if (err.status) {
@@ -66,3 +67,7 @@ function singleuser() {
             });
     }
 }
+
+/*---------------------------------------------*/
+/*----------- End Get Person By Name ----------*/
+/*---------------------------------------------*/
