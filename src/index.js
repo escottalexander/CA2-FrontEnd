@@ -146,3 +146,39 @@ function createPersonOptions(){
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
 /*---------------------------------------------*/
+
+/*---------------------------------------------*/
+/*----------- Begin Util Functions ------------*/
+/*---------------------------------------------*/
+
+/**
+ * Sorts a complete JSON person Object in this Order:
+ - id
+ - firstName
+ - lastName
+ - email
+ - hobbies
+ - phones
+ - address
+ * @param {Person} persons 
+ */
+function sortPersonJSON(persons) {
+    // Array we return at the end. 
+    var returnPersons = [];
+
+    persons.forEach(person => {
+        // New Person:
+        var returnPerson = {
+            id: person.id,
+            firstName: person.firstName,
+            lastName: person.lastName,
+            email: person.email,
+            hobbies: person.hobbies,
+            phones: person.phones,
+            address: person.address,
+        };
+        // Add sorted person to return array
+        returnPersons.push(returnPerson);
+    });
+    return returnPersons;
+}
