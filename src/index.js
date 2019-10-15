@@ -64,7 +64,7 @@ function singleuser() {
         fetch(urlName)
             .then(handleHttpErrors)
             .then(fetchedData => {
-                writeToPTagPrPerson(fetchedData, 'viewPersonWithDataPTAG');
+                document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
             })
             .catch(err => {
                 if (err.status) {
@@ -75,25 +75,25 @@ function singleuser() {
     }
 }
 
-function writeToPTagPrPerson(jsondata, tagToWrite) {
-    let person = jsondata[0];
+function writeToPTagPrPerson(jsondata) {
     let hobbies = '';
-    person['hobbies'].forEach(element => {
+    jsondata['hobbies'].forEach(element => {
         hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
     });
     let phones = '';
-    person['phones'].forEach(element => {
+    jsondata['phones'].forEach(element => {
         phones = phones + '<br>' + element.description + ': ' + element.number;
     });
 
-    document.getElementById(tagToWrite).innerHTML =
-        "<br>Firstname: " + person['firstName'] + ' ' + person['lastName']
-        + "<br>e-mail: " + person['email']
-        + "<br>Address: " + person['address']['street'] + ', '
-        + person['address']['additionalInfo'] + ', ' + person['address']['cityInfo']['zipCode']
-        + ' ' + person['address']['cityInfo']['city']
+    let stringToWrite =
+        "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
+        + "<br>e-mail: " + jsondata['email']
+        + "<br>Address: " + jsondata['address']['street'] + ', '
+        + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
+        + ' ' + jsondata['address']['cityInfo']['city']
         + "<br>Hobbies: " + hobbies
         + "<br>Phones: " + phones;
+    return stringToWrite;
 }
 
 /*---------------------------------------------*/
@@ -176,9 +176,16 @@ function allUsers() {
     fetch(urlAll)
         .then(handleHttpErrors)
         .then(jsondata => {
-            jsondata.forEach(element => {
-                writeToPTagPrPerson(element, 'viewAllPersonsWithDataPTAG');
-            });
+
+            let allPersonsToWrite = '';
+            for (let element in jsondata) {
+                allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(jsondata[element]);
+                // console.warn("WRITETOPTAG " + writeToPTagPrPerson(jsondata[element]));
+                // console.warn("ALLPERSONS " + allPersonsToWrite);
+            }
+
+            console.warn("ALLPERSONS " + allPersonsToWrite);
+            document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite;
         })
         .catch(err => {
             if (err.status) {
