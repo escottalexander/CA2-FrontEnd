@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
-        /*---------- End Get Person By Name ----------*/
+    });
+    document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        allUsers();
     });
 });
 
@@ -61,7 +64,7 @@ function singleuser() {
         fetch(urlName)
             .then(handleHttpErrors)
             .then(fetchedData => {
-                writeToPTagPrPerson(fetchedData);
+                writeToPTagPrPerson(fetchedData, 'viewPersonWithDataPTAG');
             })
             .catch(err => {
                 if (err.status) {
@@ -72,7 +75,7 @@ function singleuser() {
     }
 }
 
-function writeToPTagPrPerson(jsondata) {
+function writeToPTagPrPerson(jsondata, tagToWrite) {
     let person = jsondata[0];
     let hobbies = '';
     person['hobbies'].forEach(element => {
@@ -83,7 +86,7 @@ function writeToPTagPrPerson(jsondata) {
         phones = phones + '<br>' + element.description + ': ' + element.number;
     });
 
-    document.getElementById('viewPersonWithDataPTAG').innerHTML =
+    document.getElementById(tagToWrite).innerHTML =
         "<br>Firstname: " + person['firstName'] + ' ' + person['lastName']
         + "<br>e-mail: " + person['email']
         + "<br>Address: " + person['address']['street'] + ', '
@@ -155,42 +158,27 @@ function createPersonOptions() {
 /*---------------------------------------------*/
 
 function fillViewAllPersonsWithDataDiv() {
-    emptyDiv('viewAllPersonsWithDataData');
+    emptyDiv('viewAllPersonsWithData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewAllPersonsWithDataPTAG');
 
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get All Users';
-    buttontag.setAttribute('id', 'viewAllPersonsWithDataTAG');
+    buttontag.setAttribute('id', 'viewAllPersonsWithDataButtonTAG');
 
-    let div = document.getElementById('viewAllPersonsWithDataData');
+    let div = document.getElementById('viewAllPersonsWithData');
     div.appendChild(buttontag);
     div.appendChild(ptag);
 }
 
 function allUsers() {
-    let urlAll = url + '/allpersons';
+    let urlAll = url + 'allpersons';
     fetch(urlAll)
         .then(handleHttpErrors)
         .then(jsondata => {
-            let person = jsondata[0];
-            let hobbies = '';
-            person['hobbies'].forEach(element => {
-                hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
+            jsondata.forEach(element => {
+                writeToPTagPrPerson(element, 'viewAllPersonsWithDataPTAG');
             });
-            let phones = '';
-            person['phones'].forEach(element => {
-                phones = phones + '<br>' + element.description + ': ' + element.number;
-            });
-
-            document.getElementById('viewPersonWithDataPTAG').innerHTML =
-                "<br>Firstname: " + person['firstName'] + ' ' + person['lastName']
-                + "<br>e-mail: " + person['email']
-                + "<br>Address: " + person['address']['street'] + ', '
-                + person['address']['additionalInfo'] + ', ' + person['address']['cityInfo']['zipCode']
-                + ' ' + person['address']['cityInfo']['city']
-                + "<br>Hobbies: " + hobbies
-                + "<br>Phones: " + phones;
         })
         .catch(err => {
             if (err.status) {
