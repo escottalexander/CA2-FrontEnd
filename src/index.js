@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css'
+import { isNullOrUndefined } from 'util';
 document.addEventListener("DOMContentLoaded", function () {
     /*---------- Begin Get Person By Name ---------*/
     /*----- Should be moved to NavBar function ----*/
@@ -87,10 +88,13 @@ function writeToPTagPrPerson(jsondata) {
 
     let stringToWrite =
         "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
-        + "<br>e-mail: " + jsondata['email']
-        + "<br>Address: " + jsondata['address']['street'] + ', '
-        + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
-        + ' ' + jsondata['address']['cityInfo']['city']
+        + "<br>e-mail: " + jsondata['email'];
+    if (!isNullOrUndefined(jsondata['address'])) {
+        stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
+            + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
+            + ' ' + jsondata['address']['cityInfo']['city'];
+    }
+    stringToWrite = stringToWrite
         + "<br>Hobbies: " + hobbies
         + "<br>Phones: " + phones;
     return stringToWrite;
@@ -181,28 +185,16 @@ function allUsers() {
 
             jsondata.forEach(element => {
                 allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(element);
-                console.warn("WRITETOPTAG " + writeToPTagPrPerson(element));
-                console.warn("ALLPERSONS " + allPersonsToWrite);
             });
-
-            // let allPersonsToWrite = [];
-            // for (let element in jsondata) {
-
-            //     allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(jsondata[element]);
-            //     allPersonsToWrite.push(writeToPTagPrPerson(jsondata[element]));
-            //     console.warn("WRITETOPTAG " + writeToPTagPrPerson(jsondata[element]));
-            //     console.warn("ALLPERSONS " + allPersonsToWrite);
-            // }
 
             console.warn("ALLPERSONS " + allPersonsToWrite);
 
             document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite;
-            // document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite.join();
         })
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e.detail))
             }
-            else { console.log("Network error"); }
+            else { console.log("Network error: " + err); }
         });
 }
