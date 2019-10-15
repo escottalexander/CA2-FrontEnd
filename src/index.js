@@ -170,9 +170,13 @@ function fillViewAllPersonsWithDataDiv() {
     buttontag.innerHTML = 'Get All Users';
     buttontag.setAttribute('id', 'viewAllPersonsWithDataButtonTAG');
 
+    let tabletag = document.createElement('table');
+    tabletag.setAttribute('id', 'viewAllPersonsWithDataTableTAG');
+
     let div = document.getElementById('viewAllPersonsWithData');
     div.appendChild(buttontag);
     div.appendChild(ptag);
+    div.appendChild(tabletag);
 }
 
 function allUsersToPtag() {
