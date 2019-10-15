@@ -178,14 +178,26 @@ function allUsers() {
         .then(jsondata => {
 
             let allPersonsToWrite = '';
-            for (let element in jsondata) {
-                allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(jsondata[element]);
-                // console.warn("WRITETOPTAG " + writeToPTagPrPerson(jsondata[element]));
-                // console.warn("ALLPERSONS " + allPersonsToWrite);
-            }
+
+            jsondata.forEach(element => {
+                allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(element);
+                console.warn("WRITETOPTAG " + writeToPTagPrPerson(element));
+                console.warn("ALLPERSONS " + allPersonsToWrite);
+            });
+
+            // let allPersonsToWrite = [];
+            // for (let element in jsondata) {
+
+            //     allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(jsondata[element]);
+            //     allPersonsToWrite.push(writeToPTagPrPerson(jsondata[element]));
+            //     console.warn("WRITETOPTAG " + writeToPTagPrPerson(jsondata[element]));
+            //     console.warn("ALLPERSONS " + allPersonsToWrite);
+            // }
 
             console.warn("ALLPERSONS " + allPersonsToWrite);
+
             document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite;
+            // document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite.join();
         })
         .catch(err => {
             if (err.status) {
@@ -193,5 +205,4 @@ function allUsers() {
             }
             else { console.log("Network error"); }
         });
-
 }
