@@ -60,8 +60,20 @@ function singleuser() {
         let urlName = url + 'person/' + username;
         fetch(urlName)
             .then(handleHttpErrors)
-            .then(jsondata => {
-                let person = jsondata[0];
+            .then(fetchedData => {
+                writeToPTagPrPerson(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function writeToPTagPrPerson(jsondata){
+    let person = jsondata[0];
                 let hobbies = '';
                 person['hobbies'].forEach(element => {
                     hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
@@ -79,14 +91,6 @@ function singleuser() {
                   + ' ' + person['address']['cityInfo']['city']
                   + "<br>Hobbies: " + hobbies
                   + "<br>Phones: " + phones;
-            })
-            .catch(err => {
-                if (err.status) {
-                    err.fullError.then(e => console.log(e.detail))
-                }
-                else { console.log("Network error"); }
-            });
-    }
 }
 
 /*---------------------------------------------*/
