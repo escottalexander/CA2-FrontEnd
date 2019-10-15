@@ -7,24 +7,30 @@
 </head>
 
 <body>
-  <div id = mainDiv class="container">
-    <div id= viewPersonWithData></div>
-    <div id="addPersonSimple">
-      <h3>Add a person</h3>
-      <label for="inputFirstName">First name:</label>
-      <input id="inputFirstName">
+  <div id=mainDiv class="container">
+    <div class="row">
+      <div class="col">
+        <div id=viewPersonWithData></div>
+      </div>
+      <div class="col">
+        <div id="addPersonSimple">
+          <h3>Add a person</h3>
+          <label for="inputFirstName">First name:</label>
+          <input id="inputFirstName">
+          <br>
+          <label for="inputLastName">Last name:</label>
+          <input id="inputLastName">
+          <br>
+          <label for="inputEmail">Email:</label>
+          <input id="inputEmail" type="email">
+          <br>
+          <br>
+          <button id="createSimplePerson" class="btn btn-primary" type="button">Create person</button>
+        </div>
+      </div>
       <br>
-      <label for="inputLastName">Last name:</label>
-      <input id="inputLastName">
-      <br>
-      <label for="inputEmail">Email:</label>
-      <input id="inputEmail" type="email">
-      <br>
-      <br>
-      <button id="createSimplePerson" class="btn btn-primary" type="button">Create person</button>
+      <div id="output"></div>
     </div>
-    <br>
-    <div id="output"></div>
   </div>
   <script src="bundle.js"></script>
 </body>
