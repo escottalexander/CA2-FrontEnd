@@ -186,9 +186,6 @@ function allUsersToPtag() {
             jsondata.forEach(element => {
                 allPersonsToWrite = allPersonsToWrite + writeToPTagPrPerson(element);
             });
-
-            console.warn("ALLPERSONS " + allPersonsToWrite);
-
             document.getElementById('viewAllPersonsWithDataPTAG').innerHTML = allPersonsToWrite;
         })
         .catch(err => {
@@ -198,3 +195,7 @@ function allUsersToPtag() {
             else { console.log("Network error: " + err); }
         });
 }
+
+/*---------------------------------------------*/
+/*------------ End Get All Persons ------------*/
+/*---------------------------------------------*/
