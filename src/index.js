@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         allUsersToPtag();
+        allUsersToTableTag();
     });
 });
 
@@ -200,6 +201,85 @@ function allUsersToPtag() {
         });
 }
 
+function allUsersToTableTag() {
+    let urlAll = url + 'allpersons';
+    fetch(urlAll)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let table = document.getElementById('viewAllPersonsWithDataTableTAG');
+            let headdata = Object.keys(jsondata[0]);
+            tableHead(table, headdata);
+            tableData(table, jsondata);
+
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error: " + err); }
+        });
+}
+
+function tableHead(table, headData) {
+    let head = table.createTHead();
+    let row = head.insertRow();
+    for (let key of headData) {
+        let th = document.createElement("th");
+        let text = document.createTextNode(key);
+        th.id = key;
+        th.appendChild(text);
+        row.appendChild(th);
+    }
+
+}
+
+function tableData(table, bodyData) {
+    let tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+    for (let element of bodyData) {
+        let row = table.insertRow();
+        tbody.appendChild(row);
+        for (let key in element) {
+            let cell = row.insertCell();
+            let cellValue = '';
+            if (typeof element[key] === 'object') {
+                let innerelement = element[key];
+                for(let innervalue in innerelement){
+                    if (typeof innerelement[innervalue] === 'object') {
+                        let innerInnerElement = innerelement[innervalue];
+                        for(let innerInnerValue in innerInnerElement){
+                            cellValue += innerInnerElement[innerInnerValue];            
+                        }
+
+                    } else {
+                        cellValue += innerelement[innervalue];
+                    }
+                }
+            }
+            else {
+                cellValue += element[key];
+            }
+            let text = document.createTextNode(cellValue);
+            cell.appendChild(text);
+        }
+        // for (let key in element) {
+        //     let cell = row.insertCell();
+        //     let cellValue;
+        //     if (typeof element[key] === 'object') {
+
+        //           cellValue = 'hell!';  
+        //         // element[key].forEach(element => {
+        //         //     cellValue = cellValue + element[key][element];
+        //         // });
+        //     }
+        //     else {
+        //         cellValue = element[key];
+        //     }
+        //     let text = document.createTextNode(cellValue);
+        //     cell.appendChild(text);
+        // }
+    }
+}
 /*---------------------------------------------*/
 /*------------ End Get All Persons ------------*/
 /*---------------------------------------------*/
