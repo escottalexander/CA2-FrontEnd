@@ -72,25 +72,25 @@ function singleuser() {
     }
 }
 
-function writeToPTagPrPerson(jsondata){
+function writeToPTagPrPerson(jsondata) {
     let person = jsondata[0];
-                let hobbies = '';
-                person['hobbies'].forEach(element => {
-                    hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
-                });
-                let phones = '';
-                person['phones'].forEach(element => {
-                    phones = phones + '<br>' + element.description + ': ' + element.number;
-                });
+    let hobbies = '';
+    person['hobbies'].forEach(element => {
+        hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
+    });
+    let phones = '';
+    person['phones'].forEach(element => {
+        phones = phones + '<br>' + element.description + ': ' + element.number;
+    });
 
-                document.getElementById('viewPersonWithDataPTAG').innerHTML =
-                   "<br>Firstname: " + person['firstName'] + ' '+ person['lastName']
-                  + "<br>e-mail: " + person['email']
-                  + "<br>Address: " + person['address']['street'] + ', '
-                  + person['address']['additionalInfo'] + ', ' + person['address']['cityInfo']['zipCode'] 
-                  + ' ' + person['address']['cityInfo']['city']
-                  + "<br>Hobbies: " + hobbies
-                  + "<br>Phones: " + phones;
+    document.getElementById('viewPersonWithDataPTAG').innerHTML =
+        "<br>Firstname: " + person['firstName'] + ' ' + person['lastName']
+        + "<br>e-mail: " + person['email']
+        + "<br>Address: " + person['address']['street'] + ', '
+        + person['address']['additionalInfo'] + ', ' + person['address']['cityInfo']['zipCode']
+        + ' ' + person['address']['cityInfo']['city']
+        + "<br>Hobbies: " + hobbies
+        + "<br>Phones: " + phones;
 }
 
 /*---------------------------------------------*/
