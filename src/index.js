@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /*---------- Begin Get Person By Name ---------*/
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
+    fillViewAllPersonsWithDataDiv()
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -25,7 +26,7 @@ function handleHttpErrors(res) {
 /*---------------------------------------------*/
 
 function fillViewPersonWithDataDiv() {
-    
+    emptyDiv('viewPersonWithData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewPersonWithDataPTAG');
 
@@ -38,17 +39,15 @@ function fillViewPersonWithDataDiv() {
     buttontag.innerHTML = 'Get User';
     buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
 
-    let div = document.getElementById("viewPersonWithData");
-    div.innerHTML = "";
+    let div = document.getElementById('viewPersonWithData');
     div.appendChild(inputtag);
     div.appendChild(buttontag);
     div.appendChild(ptag);
 }
 
-/*---------- Not used yet ---------*/
 /*---- To clear the div of data ---*/
-function emptyViewPersonWithDataDiv() {
-    let div = document.getElementById("viewPersonWithData");
+function emptyDiv(divID) {
+    let div = document.getElementById(divID);
     div.innerHTML = "";
 }
 
@@ -151,14 +150,8 @@ function createPersonOptions() {
 /*----------- Begin Get All Persons -----------*/
 /*---------------------------------------------*/
 
-// TO DELETE WHEN MERGE WITH MASTER - IS COPY OF EXISTING METHOD ON MASTER BRANCH
-function emptyViewPersonWithDataDiv() {
-    let div = document.getElementById("viewPersonWithData");
-    div.innerHTML = "";
-}
-
 function fillViewAllPersonsWithDataDiv() {
-
+    emptyDiv('viewAllPersonsWithDataData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewAllPersonsWithDataPTAG');
 
@@ -166,7 +159,7 @@ function fillViewAllPersonsWithDataDiv() {
     buttontag.innerHTML = 'Get All Users';
     buttontag.setAttribute('id', 'viewAllPersonsWithDataTAG');
 
-    let div = document.getElementById("viewPersonWithData");
+    let div = document.getElementById('viewAllPersonsWithDataData');
     div.appendChild(buttontag);
     div.appendChild(ptag);
 }
