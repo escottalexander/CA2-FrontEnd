@@ -7,8 +7,8 @@
 </head>
 
 <body>
-  <div id = mainDiv class="container">
-    <div id= viewPersonWithData>
+  <div id=mainDiv class="container">
+    <div id=viewPersonWithData>
       <table></table>
 
     </div>
@@ -31,6 +31,59 @@
     <br>
     <div id="outputPersonSimple"></div>
     <!-- END ADD PERSON SIMPLE SECATION -->
+
+    <!-- BEGIN CREATE ALL SECATION -->
+    <div id="createAll">
+      <h3>Add a person</h3>
+      <div id="createAllLeft">
+        <label for="inputFirstNameCreateAll">First name:</label>
+        <input id="inputFirstNameCreateAll">
+        <br>
+        <label for="inputLastNameCreateAll">Last name:</label>
+        <input id="inputLastNameCreateAll">
+        <br>
+        <label for="inputEmailCreateAll">Email:</label>
+        <input id="inputEmailCreateAll" placeholder="email@mail.com" type="email">
+        <br>
+        <label for="inputPhoneCreateAll">Phone:</label>
+        <input id="inputPhoneCreateAll" type="number">
+        <br>
+        <br>
+        <p>Address</p>
+        <label for="inputAddressStreetCreateAll">Street:</label>
+        <input id="inputAddressStreetCreateAll">
+        <br>
+        <label for="inputAddressInfoCreateAll">Additional information:</label>
+        <input id="inputAddressInfoCreateAll">
+        <br>
+        <br>
+        <p>City</p>
+        <label for="inputCityZipCreateAll">Zip code:</label>
+        <input id="inputCityZipCreateAll" placeholder="0000">
+        <br>
+        <label for="inputCityNameCreateAll">City name:</label>
+        <input id="inputCityNameCreateAll" placeholder="city" disabled="true">
+        <p id="cityStatus">-- New city --</p>
+        <br>
+        <br>
+        <button id="createAll" class="btn btn-primary" type="button">Create</button>
+        <br>
+        <br>
+        <div id="outputCreateAll"></div>
+      </div>
+      <div id="createAllRight">
+        <p>Hobbies</p>
+        <label for="inputHobbyNameCreateAll">Name:</label>
+        <input id="inputHobbyNameCreateAll">
+        <p id="hobbyStatus">-- New hobby --</p>
+        <label for="inputHobbyDescriptionCreateAll">Hobby description:</label>
+        <textarea id="inputHobbyDescriptionCreateAll" placeholder="Short description" disabled="true"></textarea>
+        <br>
+        <br>
+      </div>
+      <br>
+    </div>
+    <!-- END CREATE ALL SECATION -->
   </div>
   <script src="bundle.js"></script>
 </body>

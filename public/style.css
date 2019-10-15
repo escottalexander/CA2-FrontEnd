@@ -10,3 +10,12 @@ body {
      margin-right: auto;
   }
   
+  #createAllLeft {
+     float: left;
+     width: 55%;
+  }
+
+  #createAllRight {
+     float: right;
+     width: 45%;
+  }
