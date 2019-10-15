@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
-        allUsers();
+        allUsersToPtag();
     });
 });
 
@@ -175,7 +175,7 @@ function fillViewAllPersonsWithDataDiv() {
     div.appendChild(ptag);
 }
 
-function allUsers() {
+function allUsersToPtag() {
     let urlAll = url + 'allpersons';
     fetch(urlAll)
         .then(handleHttpErrors)
