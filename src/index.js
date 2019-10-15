@@ -68,7 +68,7 @@ function createPersonOptions() {
 /*----------- Begin Get All Persons -----------*/
 /*---------------------------------------------*/
 
-// TO DELETE WHEN MERGE WITH MASTER - IS CPOPY OF EXISTING METHOD ON MASTER BRANCH
+// TO DELETE WHEN MERGE WITH MASTER - IS COPY OF EXISTING METHOD ON MASTER BRANCH
 function emptyViewPersonWithDataDiv() {
     let div = document.getElementById("viewPersonWithData");
     div.innerHTML = "";
