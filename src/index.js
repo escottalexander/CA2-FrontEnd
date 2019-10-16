@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /*---------- Begin Get Person By Name ---------*/
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
+    allHobbies();
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -182,3 +183,45 @@ function sortPersonJSON(persons) {
     });
     return returnPersons;
 }
+
+/*---------------------------------------------*/
+/*------------ End Util Functions -------------*/
+/*---------------------------------------------*/
+
+
+/*---------------------------------------------*/
+/*-------- Begin Get Hobby/AllHobbies ---------*/
+/*---------------------------------------------*/
+
+function allHobbies(){
+    let urlAll = url + 'allpersons';
+    fetch(urlAll)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let hobbiesArray = [];
+            jsondata.forEach(element => {
+                let obj = JSON.parse(JSON.stringify(element));
+                hobbiesArray.push(obj.hobbies);
+            });
+            console.log('ARRAY ' + hobbiesArray);
+            console.log(JSON.parse(JSON.stringify(hobbiesArray)));
+            console.log('ARRAY ' + hobbiesArray[3][0].name);
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error: " + err); }
+        });
+}
+
+
+
+
+
+
+
+
+/*---------------------------------------------*/
+/*--------- End Get Hobby/AllHobbies ----------*/
+/*---------------------------------------------*/
