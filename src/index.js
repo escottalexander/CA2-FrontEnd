@@ -338,7 +338,6 @@ function sortPersonJSON(persons) {
 /*-------- Begin Get Hobby/AllHobbies ---------*/
 /*---------------------------------------------*/
 
-// hobbiesArray[x][y].field
 function allHobbies() {
     let urlAll = url + 'allpersons';
     fetch(urlAll)
@@ -479,7 +478,6 @@ function fillViewAllPersonsWithHobbyDiv() {
     div.appendChild(buttontag);
     div.appendChild(tabletag);
 }
-
 
 /*---------------------------------------------*/
 /*--------- End Get Hobby/AllHobbies ----------*/
