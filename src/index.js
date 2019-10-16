@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
+// Our Cache - Stores the partial .HTML pages.
+var partialsCache = {} // Apparently important that this is at the top, or it won't work. 
 /* If no Fragment Identifier is provided then we default to home */
 if (!location.hash) { // Uses the falsy concept
     location.hash = "#home";
@@ -26,8 +28,6 @@ navigate();
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
 /* Navigate whenever the fragment identifier value changes */
 window.addEventListener("hashchange", navigate);
-// Our Cache - Stores the partial .HTML pages.
-var partialsCache = {}
 /* Encapsulates an HTTP GET request using XMLHttpRequest
 Fetches the file at the given path, then calls the 
 callback with the content of the file. */
@@ -68,8 +68,6 @@ function navigate() {
     var contentDiv = document.getElementById("content");
     // Get a reference to the fragment. We use substr(1) to remove the '#' hash from the start of the string. 
     var fragment = location.hash.substr(1);
-    // Get a reference to the content div
-    var content = document.getElementById("content");
     // Set the content div innerHTML based on the fragment identifier.
     getContent(fragment, function (content) {
         contentDiv.innerHTML = content;
