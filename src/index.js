@@ -18,9 +18,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
-window.addEventListener("hashchange", function(){
+window.addEventListener("hashchange", function () {
+    var fragment = location.hash;
     // Do something when the fragment changes. 
+    console.log(fragment);
+
+    changeActiveNavbarElement();
 });
+
+function changeActiveNavbarElement() {
+    // Get the container element
+    var btnContainer = document.getElementById("navbarNav");
+
+    // Get all items with class="btn" inside the container
+    var btns = btnContainer.getElementsByClassName("nav-item");
+
+    // Loop through the items and add the active class to the current/clicked nav
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function () {
+            var current = document.getElementsByClassName("active");
+
+            // If there's no active class
+            if (current.length > 0) {
+                current[0].className = current[0].className.replace(" active", "");
+            }
+
+            // Add the active class to the current/clicked nav
+            this.className += " active";
+        });
+    }
+}
 
 const url = 'https://maltemagnussen.com/CA2/api/search/';
 const testurl = 'http://localhost:8080/CA2/api/search/';
@@ -252,16 +279,16 @@ function tableData(table, bodyData) {
             let obj = JSON.parse(JSON.stringify(element));
             let cellValue = '';
             if (typeof element[key] === 'object') {
-                if(key === 'address'){
+                if (key === 'address') {
                     cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
-                else if(key === 'hobbies'){
+                else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
                         cellValue = cellValue + hobby.name + ', ';
                     });
                     cellValue = cellValue.slice(0, -2);
                 }
-                else if(key === 'phones'){
+                else if (key === 'phones') {
                     obj.phones.forEach(phone => {
                         cellValue = cellValue + phone.description + ': ' + phone.number + ', ';
                     });
@@ -277,7 +304,7 @@ function tableData(table, bodyData) {
     }
 }
 
-function fixTableHeaders(){
+function fixTableHeaders() {
     document.getElementById("address").innerText = "Address";
     document.getElementById("email").innerText = "E-mail";
     document.getElementById("firstName").innerText = "Firstname";
@@ -285,7 +312,7 @@ function fixTableHeaders(){
     document.getElementById("lastName").innerText = "Lastname";
     document.getElementById("phones").innerText = "Phone numbers";
     document.getElementById("hobbies").innerText = "Hobbies";
-    
+
 }
 
 /*---------------------------------------------*/
