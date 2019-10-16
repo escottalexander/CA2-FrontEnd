@@ -17,46 +17,40 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
+/* If no Fragment Identifier is provided then we default to home */
+if(!location.hash) { // Uses the falsy concept
+    location.hash = "#home";
+}
 /* Navigate once to the initial hash value */
 navigate();
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
 /* Navigate whenever the fragment identifier value changes */
-window.addEventListener("hashchange", function () {
-    navigate();
-});
-
+window.addEventListener("hashchange", navigate);
 /* Updates Dynamic content based on the fragment identifier */
+// Is hoisted.
 function navigate(){
-    // Get a reference to the fragment. 
-    var fragment = location.hash;
+    // Get a reference to the fragment. We use substr(1) to remove the # hash
+    var fragment = location.hash.substr(1);
     // Do something when the fragment changes. 
-    console.log(fragment);
-
+    console.log(fragment); // Right now we just log it.
     // Get a reference to the content div
     var content = document.getElementById("content");
-
     // Set the content div to the fragment value.
     content.innerHTML = fragment;
-
     changeActiveNavbarElement();
 }
-
 function changeActiveNavbarElement() {
     var btnContainer = document.getElementById("navbarNav");
-
     // Get all items with class="nav-item" inside the container
     var btns = btnContainer.getElementsByClassName("nav-item");
-
     // Loop through the items and add the active class to the current/clicked nav
     for (var i = 0; i < btns.length; i++) {
         btns[i].addEventListener("click", function () {
             var current = document.getElementsByClassName("active");
-
             // If there's no active class
             if (current.length > 0) {
                 current[0].className = current[0].className.replace(" active", "");
             }
-
             // Add the active class to the current/clicked nav
             this.className += " active";
         });
