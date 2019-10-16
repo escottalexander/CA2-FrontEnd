@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
     /*---------- Begin Get Person By Name ---------*/
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
-    allHobbies();
     fillViewAllPersonsWithDataDiv();
+    fillHobbiesDropDownDiv();
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -248,16 +248,16 @@ function tableData(table, bodyData) {
             let obj = JSON.parse(JSON.stringify(element));
             let cellValue = '';
             if (typeof element[key] === 'object') {
-                if(key === 'address'){
+                if (key === 'address') {
                     cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
-                else if(key === 'hobbies'){
+                else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
                         cellValue = cellValue + hobby.name + ', ';
                     });
                     cellValue = cellValue.slice(0, -2);
                 }
-                else if(key === 'phones'){
+                else if (key === 'phones') {
                     obj.phones.forEach(phone => {
                         cellValue = cellValue + phone.description + ': ' + phone.number + ', ';
                     });
@@ -273,7 +273,7 @@ function tableData(table, bodyData) {
     }
 }
 
-function fixTableHeaders(){
+function fixTableHeaders() {
     document.getElementById("address").innerText = "Address";
     document.getElementById("email").innerText = "E-mail";
     document.getElementById("firstName").innerText = "Firstname";
@@ -281,7 +281,7 @@ function fixTableHeaders(){
     document.getElementById("lastName").innerText = "Lastname";
     document.getElementById("phones").innerText = "Phone numbers";
     document.getElementById("hobbies").innerText = "Hobbies";
-    
+
 }
 
 /*---------------------------------------------*/
@@ -334,7 +334,7 @@ function sortPersonJSON(persons) {
 /*---------------------------------------------*/
 
 // hobbiesArray[x][y].field
-function allHobbies(){
+function allHobbies() {
     let urlAll = url + 'allpersons';
     fetch(urlAll)
         .then(handleHttpErrors)
@@ -344,6 +344,8 @@ function allHobbies(){
                 let obj = JSON.parse(JSON.stringify(element));
                 hobbiesArray.push(obj.hobbies);
             });
+            console.log('ALL HOBBIES FUNCTION ' + hobbiesArray);
+            console.log('ALL HOBBIES FUNCTION ' + hobbiesArray[2][0].name);
             return hobbiesArray;
         })
         .catch(err => {
@@ -354,9 +356,32 @@ function allHobbies(){
         });
 }
 
+function fillHobbiesDropDownDiv() {
+    emptyDiv('allHobbies');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allHobbiesPTAG');
 
+    let selecttag = document.createElement('select');
+    selecttag.innerHTML = 'Select Hobby';
+    selecttag.setAttribute('id', 'allHobbiesDropDownSelectTAG');
 
+    let div = document.getElementById('allHobbies');
+    div.appendChild(ptag);
+    div.appendChild(selecttag);
+    dropDownData();
+}
 
+function dropDownData() {
+    console.log('DROP DOWN FUNCTION ' + allHobbies());
+    console.log('DROP DOWN FUNCTION ' + allHobbies()[2][0].name);
+    let hobbyNames = [];
+    allHobbies().forEach(element => {
+        element.forEach(hobby => {
+            hobbyNames.push(hobby.name);
+        })
+    })
+    console.log(hobbyNames);
+}
 
 
 
