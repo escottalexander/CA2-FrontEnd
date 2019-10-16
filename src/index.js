@@ -26,6 +26,10 @@ navigate();
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
 /* Navigate whenever the fragment identifier value changes */
 window.addEventListener("hashchange", navigate);
+/* Gets the appropriate content for the given fragment identifier */
+function getContent(fragment) {
+    return fragment;
+}
 /* Updates Dynamic content based on the fragment identifier */
 // Is hoisted.
 function navigate(){
@@ -35,8 +39,8 @@ function navigate(){
     console.log(fragment); // Right now we just log it.
     // Get a reference to the content div
     var content = document.getElementById("content");
-    // Set the content div to the fragment value.
-    content.innerHTML = fragment;
+    // Set the content div based on the fragment identifier.
+    content.innerHTML = getContent(fragment);
     changeActiveNavbarElement();
 }
 function changeActiveNavbarElement() {
