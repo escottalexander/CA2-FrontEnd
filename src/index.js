@@ -5,8 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
-    fillHobbiesDropDownDiv();
+    allHobbies();
 
+    document.getElementById("hobbiesDropDownButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+
+    });
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -344,9 +348,7 @@ function allHobbies() {
                 let obj = JSON.parse(JSON.stringify(element));
                 hobbiesArray.push(obj.hobbies);
             });
-            console.log('ALL HOBBIES FUNCTION ' + hobbiesArray);
-            console.log('ALL HOBBIES FUNCTION ' + hobbiesArray[2][0].name);
-            return hobbiesArray;
+            fillHobbiesDropDownDiv(hobbiesArray)
         })
         .catch(err => {
             if (err.status) {
@@ -356,31 +358,48 @@ function allHobbies() {
         });
 }
 
-function fillHobbiesDropDownDiv() {
+
+function fillHobbiesDropDownDiv(allhobbies) {
     emptyDiv('allHobbies');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'allHobbiesPTAG');
 
     let selecttag = document.createElement('select');
-    selecttag.innerHTML = 'Select Hobby';
     selecttag.setAttribute('id', 'allHobbiesDropDownSelectTAG');
+    let optionstagDefault = document.createElement('option');
+    optionstagDefault.setAttribute('id', 'default');
+    optionstagDefault.setAttribute('selected', '');
+    optionstagDefault.setAttribute('hidden', '');
+    optionstagDefault.innerHTML = 'Select Hobby';
+    selecttag.appendChild(optionstagDefault);
+
+    dropDownData(allhobbies).forEach(hobby => {
+        let optionstag = document.createElement('option');
+        optionstag.setAttribute('id', hobby.replace(/ /g, ''));
+        optionstag.setAttribute('value', hobby);
+        optionstag.innerHTML = hobby;
+        selecttag.appendChild(optionstag);
+    })
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get Hobby';
+    buttontag.setAttribute('id', 'hobbiesDropDownButtonTAG');
 
     let div = document.getElementById('allHobbies');
     div.appendChild(ptag);
     div.appendChild(selecttag);
-    dropDownData();
+    div.appendChild(buttontag);
 }
 
-function dropDownData() {
-    console.log('DROP DOWN FUNCTION ' + allHobbies());
-    console.log('DROP DOWN FUNCTION ' + allHobbies()[2][0].name);
+function dropDownData(allhobbies) {
     let hobbyNames = [];
-    allHobbies().forEach(element => {
+    allhobbies.forEach(element => {
         element.forEach(hobby => {
             hobbyNames.push(hobby.name);
         })
     })
-    console.log(hobbyNames);
+    let uniqueHobbyNames = Array.from(new Set(hobbyNames));
+    return uniqueHobbyNames;
 }
 
 
