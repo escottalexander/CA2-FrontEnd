@@ -7,10 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     fillViewAllPersonsWithDataDiv();
     allHobbies();
 
-    document.getElementById("hobbiesDropDownButtonTAG").addEventListener('click', function (event) {
-        event.preventDefault();
-
-    });
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -389,6 +385,11 @@ function fillHobbiesDropDownDiv(allhobbies) {
     div.appendChild(ptag);
     div.appendChild(selecttag);
     div.appendChild(buttontag);
+
+    document.getElementById("hobbiesDropDownButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getHobbyByName();
+    });
 }
 
 function dropDownData(allhobbies) {
@@ -402,7 +403,10 @@ function dropDownData(allhobbies) {
     return uniqueHobbyNames;
 }
 
-
+function getHobbyByName(){
+    let selected = document.getElementById('allHobbiesDropDownSelectTAG');
+    document.getElementById('allHobbiesPTAG').innerHTML = selected.options[selected.selectedIndex].value;
+}
 
 
 
