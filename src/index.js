@@ -56,6 +56,7 @@ function changeActiveNavbarElement() {
         });
     }
 }
+/* End of JavaScript code for dynamic navigation behavior */
 
 const url = 'https://maltemagnussen.com/CA2/api/search/';
 const testurl = 'http://localhost:8080/CA2/api/search/';
