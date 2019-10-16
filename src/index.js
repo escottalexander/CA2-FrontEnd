@@ -22,15 +22,18 @@ window.addEventListener("hashchange", function () {
     var fragment = location.hash;
     // Do something when the fragment changes. 
     console.log(fragment);
+    // Get a reference to the content div
+    var content = document.getElementById("content");
+
+    content.innerHTML = fragment;
 
     changeActiveNavbarElement();
 });
 
 function changeActiveNavbarElement() {
-    // Get the container element
     var btnContainer = document.getElementById("navbarNav");
 
-    // Get all items with class="btn" inside the container
+    // Get all items with class="nav-item" inside the container
     var btns = btnContainer.getElementsByClassName("nav-item");
 
     // Loop through the items and add the active class to the current/clicked nav
