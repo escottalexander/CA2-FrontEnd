@@ -210,6 +210,7 @@ function allUsersToTableTag() {
             let headdata = Object.keys(jsondata[0]);
             tableHead(table, headdata);
             tableData(table, jsondata);
+            fixTableHeaders();
 
         })
         .catch(err => {
@@ -241,45 +242,45 @@ function tableData(table, bodyData) {
         tbody.appendChild(row);
         for (let key in element) {
             let cell = row.insertCell();
+            let obj = JSON.parse(JSON.stringify(element));
             let cellValue = '';
             if (typeof element[key] === 'object') {
-                let innerelement = element[key];
-                for(let innervalue in innerelement){
-                    if (typeof innerelement[innervalue] === 'object') {
-                        let innerInnerElement = innerelement[innervalue];
-                        for(let innerInnerValue in innerInnerElement){
-                            cellValue += innerInnerElement[innerInnerValue];            
-                        }
-
-                    } else {
-                        cellValue += innerelement[innervalue];
-                    }
+                if(key === 'address'){
+                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                }
+                else if(key === 'hobbies'){
+                    obj.hobbies.forEach(hobby => {
+                        cellValue = cellValue + hobby.name + ', ';
+                    });
+                    cellValue = cellValue.slice(0, -2);
+                }
+                else if(key === 'phones'){
+                    obj.phones.forEach(phone => {
+                        cellValue = cellValue + phone.description + ': ' + phone.number + ', ';
+                    });
+                    cellValue = cellValue.slice(0, -2);
                 }
             }
             else {
-                cellValue += element[key];
+                cellValue = element[key];
             }
             let text = document.createTextNode(cellValue);
             cell.appendChild(text);
         }
-        // for (let key in element) {
-        //     let cell = row.insertCell();
-        //     let cellValue;
-        //     if (typeof element[key] === 'object') {
-
-        //           cellValue = 'hell!';  
-        //         // element[key].forEach(element => {
-        //         //     cellValue = cellValue + element[key][element];
-        //         // });
-        //     }
-        //     else {
-        //         cellValue = element[key];
-        //     }
-        //     let text = document.createTextNode(cellValue);
-        //     cell.appendChild(text);
-        // }
     }
 }
+
+function fixTableHeaders(){
+    document.getElementById("address").innerText = "Address";
+    document.getElementById("email").innerText = "E-mail";
+    document.getElementById("firstName").innerText = "Firstname";
+    document.getElementById("id").innerText = "ID";
+    document.getElementById("lastName").innerText = "Lastname";
+    document.getElementById("phones").innerText = "Phone numbers";
+    document.getElementById("hobbies").innerText = "Hobbies";
+    
+}
+
 /*---------------------------------------------*/
 /*------------ End Get All Persons ------------*/
 /*---------------------------------------------*/
