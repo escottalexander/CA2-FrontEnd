@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
+    fillViewAllPersonsWithHobbyDiv();
     allHobbies();
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
@@ -15,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         allUsersToPtag();
         allUsersToTableTag();
+    });
+    document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getAllPersonsWithHobbyByName();
     });
 });
 
@@ -424,8 +429,6 @@ function getHobbyByName() {
                 else { console.log("Network error"); }
             });
     }
-
-
 }
 
 function writeToPTagPrHobby(jsondata) {
@@ -433,6 +436,48 @@ function writeToPTagPrHobby(jsondata) {
         "<br>Hobby: " + jsondata['name']
         + "<br>Description: " + jsondata['description'];
     return stringToWrite;
+}
+
+function getAllPersonsWithHobbyByName() {
+    let selected = document.getElementById('allHobbiesDropDownSelectTAG');
+
+    let hobbyname = selected.options[selected.selectedIndex].value;
+    if (!hobbyname) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    }
+    else {
+        let urlHobby = url + '/hobby?hobby=' + hobbyname;
+        fetch(urlHobby)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let sortedData = sortPersonJSON(jsondata);
+            let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
+            let headdata = Object.keys(sortedData[0]);
+            tableHead(table, headdata);
+            tableData(table, sortedData);
+            fixTableHeaders();
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function fillViewAllPersonsWithHobbyDiv() {
+    emptyDiv('viewAllPersonsWithHobby');
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get All Users With Hobby';
+    buttontag.setAttribute('id', 'viewAllPersonsWithHobbyButtonTAG');
+
+    let tabletag = document.createElement('table');
+    tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
+
+    let div = document.getElementById('viewAllPersonsWithHobby');
+    div.appendChild(buttontag);
+    div.appendChild(tabletag);
 }
 
 
