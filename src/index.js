@@ -193,6 +193,7 @@ function sortPersonJSON(persons) {
 /*-------- Begin Get Hobby/AllHobbies ---------*/
 /*---------------------------------------------*/
 
+// hobbiesArray[x][y].field
 function allHobbies(){
     let urlAll = url + 'allpersons';
     fetch(urlAll)
@@ -203,9 +204,7 @@ function allHobbies(){
                 let obj = JSON.parse(JSON.stringify(element));
                 hobbiesArray.push(obj.hobbies);
             });
-            console.log('ARRAY ' + hobbiesArray);
-            console.log(JSON.parse(JSON.stringify(hobbiesArray)));
-            console.log('ARRAY ' + hobbiesArray[3][0].name);
+            return hobbiesArray;
         })
         .catch(err => {
             if (err.status) {
@@ -214,6 +213,8 @@ function allHobbies(){
             else { console.log("Network error: " + err); }
         });
 }
+
+
 
 
 
