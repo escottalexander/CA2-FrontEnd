@@ -382,9 +382,9 @@ function fillHobbiesDropDownDiv(allhobbies) {
     buttontag.setAttribute('id', 'hobbiesDropDownButtonTAG');
 
     let div = document.getElementById('allHobbies');
-    div.appendChild(ptag);
     div.appendChild(selecttag);
     div.appendChild(buttontag);
+    div.appendChild(ptag);
 
     document.getElementById("hobbiesDropDownButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -403,12 +403,37 @@ function dropDownData(allhobbies) {
     return uniqueHobbyNames;
 }
 
-function getHobbyByName(){
+function getHobbyByName() {
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
-    document.getElementById('allHobbiesPTAG').innerHTML = selected.options[selected.selectedIndex].value;
+
+    let hobbyname = selected.options[selected.selectedIndex].value;
+    if (!hobbyname) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    }
+    else {
+        let urlHobby = url + 'hobby/' + hobbyname;
+        fetch(urlHobby)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                document.getElementById('allHobbiesPTAG').innerHTML = writeToPTagPrHobby(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+
+
 }
 
-
+function writeToPTagPrHobby(jsondata) {
+        let stringToWrite =
+        "<br>Hobby: " + jsondata['name']
+        + "<br>Description: " + jsondata['description'];
+    return stringToWrite;
+}
 
 
 /*---------------------------------------------*/
