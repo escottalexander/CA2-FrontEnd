@@ -28,12 +28,18 @@ navigate();
 window.addEventListener("hashchange", navigate);
 /* Gets the appropriate content for the given fragment identifier */
 function getContent(fragment) {
-    return fragment;
+    var partials = {
+        home: "Welcome to Hold Krykkes Course Assignment 2 Website.",
+        get: "Get a User",
+        add: "Add a User"
+    };
+    // Look up the partial given the fragment. 
+    return partials[fragment];
 }
 /* Updates Dynamic content based on the fragment identifier */
 // Is hoisted.
 function navigate(){
-    // Get a reference to the fragment. We use substr(1) to remove the # hash
+    // Get a reference to the fragment. We use substr(1) to remove the '#' hash from the start of the string. 
     var fragment = location.hash.substr(1);
     // Do something when the fragment changes. 
     console.log(fragment); // Right now we just log it.
