@@ -26,20 +26,39 @@ navigate();
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
 /* Navigate whenever the fragment identifier value changes */
 window.addEventListener("hashchange", navigate);
-/* Gets the appropriate content for the given fragment identifier */
-function getContent(fragment, callback) {
-
+// Our Cache - Stores the partial .HTML pages.
+var partialsCache = {}
+/* Encapsulates an HTTP GET request using XMLHttpRequest
+Fetches the file at the given path, then calls the 
+callback with the content of the file. */
+function fetchFile(path, callback) {
     // Create a new AJAX request for fetching the partial HTML file.
     var request = new XMLHttpRequest();
-
     // Call the callback with the content loaded from the file. 
-    request.onload = function() { // This is the function that gets invoked once the file is loaded.
+    request.onload = function () { // This is the function that gets invoked once the file is loaded.
         callback(request.responseText); // We get the content here. 
     };
-
     // Fetch the partial HTML File given the fragment.
-    request.open("GET", fragment + ".html"); // Initialize the request. HTTP GET request + PATH
+    request.open("GET", path); // Initialize the request. HTTP GET request + PATH
     request.send(null); // Finalize the request.
+}
+
+/* Gets the appropriate content for the given fragment identifier */
+// Implements a cache.
+function getContent(fragment, callback) {
+    // If the page has been fetched before:
+    if (partialsCache[fragment]) {
+        // Just use the cached version:
+        callback(partialsCache[fragment]);
+    } else {
+        fetchFile(fragment + ".html", function (content) {
+            // Store the fetched content in the cache
+            partialsCache[fragment] = content;
+            // Pass the content to the callback
+            callback(content);  
+        });
+    }
+
 }
 
 /* Updates Dynamic content based on the fragment identifier */
