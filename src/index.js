@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+/* The JavaScript Code for Navigation Dynamic Behavior */
+/* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
+window.addEventListener("hashchange", function(){
+    // Do something when the fragment changes. 
+});
+
 const url = 'https://maltemagnussen.com/CA2/api/search/';
 const testurl = 'http://localhost:8080/CA2/api/search/';
 
