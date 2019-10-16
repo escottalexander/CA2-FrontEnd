@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
 /* If no Fragment Identifier is provided then we default to home */
-if(!location.hash) { // Uses the falsy concept
+if (!location.hash) { // Uses the falsy concept
     location.hash = "#home";
 }
 /* Navigate once to the initial hash value */
@@ -27,26 +27,34 @@ navigate();
 /* Navigate whenever the fragment identifier value changes */
 window.addEventListener("hashchange", navigate);
 /* Gets the appropriate content for the given fragment identifier */
-function getContent(fragment) {
-    var partials = {
-        home: "Welcome to Hold Krykkes Course Assignment 2 Website.",
-        get: "Get a User",
-        add: "Add a User"
+function getContent(fragment, callback) {
+
+    // Create a new AJAX request for fetching the partial HTML file.
+    var request = new XMLHttpRequest();
+
+    // Call the callback with the content loaded from the file. 
+    request.onload = function() { // This is the function that gets invoked once the file is loaded.
+        callback(request.responseText); // We get the content here. 
     };
-    // Look up the partial given the fragment. 
-    return partials[fragment];
+
+    // Fetch the partial HTML File given the fragment.
+    request.open("GET", fragment + ".html"); // Initialize the request. HTTP GET request + PATH
+    request.send(null); // Finalize the request.
 }
+
 /* Updates Dynamic content based on the fragment identifier */
 // Is hoisted.
-function navigate(){
+function navigate() {
+    // Get a reference to the content Div
+    var contentDiv = document.getElementById("content");
     // Get a reference to the fragment. We use substr(1) to remove the '#' hash from the start of the string. 
     var fragment = location.hash.substr(1);
-    // Do something when the fragment changes. 
-    console.log(fragment); // Right now we just log it.
     // Get a reference to the content div
     var content = document.getElementById("content");
-    // Set the content div based on the fragment identifier.
-    content.innerHTML = getContent(fragment);
+    // Set the content div innerHTML based on the fragment identifier.
+    getContent(fragment, function (content) {
+        contentDiv.innerHTML = content;
+    });
     changeActiveNavbarElement();
 }
 function changeActiveNavbarElement() {
