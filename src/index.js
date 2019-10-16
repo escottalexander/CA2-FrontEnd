@@ -17,18 +17,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
+/* Navigate once to the initial hash value */
+navigate();
 /* Listen for fragment identifier value changes (The # at the end of the URL is the fragment) */
+/* Navigate whenever the fragment identifier value changes */
 window.addEventListener("hashchange", function () {
+    navigate();
+});
+
+/* Updates Dynamic content based on the fragment identifier */
+function navigate(){
+    // Get a reference to the fragment. 
     var fragment = location.hash;
     // Do something when the fragment changes. 
     console.log(fragment);
+
     // Get a reference to the content div
     var content = document.getElementById("content");
 
+    // Set the content div to the fragment value.
     content.innerHTML = fragment;
 
     changeActiveNavbarElement();
-});
+}
 
 function changeActiveNavbarElement() {
     var btnContainer = document.getElementById("navbarNav");
