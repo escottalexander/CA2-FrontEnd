@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /*---------- Begin Get Person By Name ---------*/
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
-    fillViewAllPersonsWithDataDiv()
+    fillViewAllPersonsWithDataDiv();
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -206,10 +206,11 @@ function allUsersToTableTag() {
     fetch(urlAll)
         .then(handleHttpErrors)
         .then(jsondata => {
+            let sortedData = sortPersonJSON(jsondata);
             let table = document.getElementById('viewAllPersonsWithDataTableTAG');
-            let headdata = Object.keys(jsondata[0]);
+            let headdata = Object.keys(sortedData[0]);
             tableHead(table, headdata);
-            tableData(table, jsondata);
+            tableData(table, sortedData);
             fixTableHeaders();
 
         })
@@ -311,9 +312,9 @@ function sortPersonJSON(persons) {
             firstName: person.firstName,
             lastName: person.lastName,
             email: person.email,
+            address: person.address,
             hobbies: person.hobbies,
             phones: person.phones,
-            address: person.address,
         };
         // Add sorted person to return array
         returnPersons.push(returnPerson);
