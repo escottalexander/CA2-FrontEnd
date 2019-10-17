@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
-        allUsersToPtag();
+        //allUsersToPtag();
         allUsersToTableTag();
     });
     document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
