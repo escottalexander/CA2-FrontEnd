@@ -1,19 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { isNullOrUndefined } from 'util';
+import { type } from 'os';
 document.addEventListener("DOMContentLoaded", function () {
 
     /*----- Should be moved to NavBar function ----*/
-    fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
     fillViewAllPersonsWithZipDiv();
     allHobbies();
     allZipcodes()
 
-    document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
-        event.preventDefault();
-        singleuser();
-    });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         allUsersToPtag();
@@ -44,6 +40,7 @@ window.addEventListener("hashchange", navigate);
 /* Encapsulates an HTTP GET request using XMLHttpRequest
 Fetches the file at the given path, then calls the 
 callback with the content of the file. */
+// TODO - Should maybe be replaced with the fetch stuff teachers wants us to use? 
 function fetchFile(path, callback) {
     // Create a new AJAX request for fetching the partial HTML file.
     var request = new XMLHttpRequest();
@@ -68,12 +65,10 @@ function getContent(fragment, callback) {
             // Store the fetched content in the cache
             partialsCache[fragment] = content;
             // Pass the content to the callback
-            callback(content);  
+            callback(content);
         });
     }
-
 }
-
 /* Updates Dynamic content based on the fragment identifier */
 // Is hoisted.
 function navigate() {
@@ -84,6 +79,10 @@ function navigate() {
     // Set the content div innerHTML based on the fragment identifier.
     getContent(fragment, function (content) {
         contentDiv.innerHTML = content;
+        switch (fragment) {
+            case "get": get(); break;
+
+        }
     });
     changeActiveNavbarElement();
 }
@@ -119,81 +118,89 @@ function handleHttpErrors(res) {
 /*---------------------------------------------*/
 /*---------- Begin Get Person By Name ---------*/
 /*---------------------------------------------*/
+function get() {
 
-function fillViewPersonWithDataDiv() {
-    emptyDiv('viewPersonWithData');
-    let ptag = document.createElement('p');
-    ptag.setAttribute('id', 'viewPersonWithDataPTAG');
+    fillViewPersonWithDataDiv();
 
-    let inputtag = document.createElement('input');
-    inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
-    inputtag.setAttribute('type', 'text');
-    inputtag.setAttribute('placeholder', 'UserName');
+    document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        singleuser();
+    });
 
-    let buttontag = document.createElement('button');
-    buttontag.innerHTML = 'Get User';
-    buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
+    function fillViewPersonWithDataDiv() {
+        emptyDiv('viewPersonWithData');
+        let ptag = document.createElement('p');
+        ptag.setAttribute('id', 'viewPersonWithDataPTAG');
 
-    let div = document.getElementById('viewPersonWithData');
-    div.appendChild(inputtag);
-    div.appendChild(buttontag);
-    div.appendChild(ptag);
+        let inputtag = document.createElement('input');
+        inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
+        inputtag.setAttribute('type', 'text');
+        inputtag.setAttribute('placeholder', 'UserName');
+
+        let buttontag = document.createElement('button');
+        buttontag.innerHTML = 'Get User';
+        buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
+
+        let div = document.getElementById('viewPersonWithData');
+        div.appendChild(inputtag);
+        div.appendChild(buttontag);
+        div.appendChild(ptag);
+    }
+
+    function singleuser() {
+        let username = document.getElementById('viewPersonWithDataInputTAG').value;
+        if (!username) {
+            document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+        }
+        else {
+            let urlName = url + 'person/' + username;
+            fetch(urlName)
+                .then(handleHttpErrors)
+                .then(fetchedData => {
+                    document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
+                })
+                .catch(err => {
+                    if (err.status) {
+                        err.fullError.then(e => console.log(e.detail))
+                    }
+                    else { console.log("Network error"); }
+                });
+        }
+    }
+
+    function writeToPTagPrPerson(jsondata) {
+        let hobbies = '';
+        jsondata['hobbies'].forEach(element => {
+            hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
+        });
+        let phones = '';
+        jsondata['phones'].forEach(element => {
+            phones = phones + '<br>' + element.description + ': ' + element.number;
+        });
+
+        let stringToWrite =
+            "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
+            + "<br>e-mail: " + jsondata['email'];
+        if (!isNullOrUndefined(jsondata['address'])) {
+            stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
+                + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
+                + ' ' + jsondata['address']['cityInfo']['city'];
+        }
+        stringToWrite = stringToWrite
+            + "<br>Hobbies: " + hobbies
+            + "<br>Phones: " + phones;
+        return stringToWrite;
+    }
 }
+/*---------------------------------------------*/
+/*----------- End Get Person By Name ----------*/
+/*---------------------------------------------*/
 
 /*---- To clear the div of data ---*/
 function emptyDiv(divID) {
     let div = document.getElementById(divID);
     div.innerHTML = "";
 }
-
-function singleuser() {
-    let username = document.getElementById('viewPersonWithDataInputTAG').value;
-    if (!username) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
-    }
-    else {
-        let urlName = url + 'person/' + username;
-        fetch(urlName)
-            .then(handleHttpErrors)
-            .then(fetchedData => {
-                document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
-            })
-            .catch(err => {
-                if (err.status) {
-                    err.fullError.then(e => console.log(e.detail))
-                }
-                else { console.log("Network error"); }
-            });
-    }
-}
-
-function writeToPTagPrPerson(jsondata) {
-    let hobbies = '';
-    jsondata['hobbies'].forEach(element => {
-        hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
-    });
-    let phones = '';
-    jsondata['phones'].forEach(element => {
-        phones = phones + '<br>' + element.description + ': ' + element.number;
-    });
-
-    let stringToWrite =
-        "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
-        + "<br>e-mail: " + jsondata['email'];
-    if (!isNullOrUndefined(jsondata['address'])) {
-        stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
-            + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
-            + ' ' + jsondata['address']['cityInfo']['city'];
-    }
-    stringToWrite = stringToWrite
-        + "<br>Hobbies: " + hobbies
-        + "<br>Phones: " + phones;
-    return stringToWrite;
-}
-
-/*---------------------------------------------*/
-/*----------- End Get Person By Name ----------*/
-/*---------------------------------------------*/
 
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
