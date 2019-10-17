@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
+    fillViewAllPersonsWithHobbyDiv();
+    allHobbies();
+
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
@@ -13,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         allUsersToPtag();
         allUsersToTableTag();
+    });
+    document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getAllPersonsWithHobbyByName();
     });
 });
 
@@ -398,4 +405,158 @@ function sortPersonJSON(persons) {
     });
     return returnPersons;
 }
+
+/*---------------------------------------------*/
+/*------------ End Util Functions -------------*/
+/*---------------------------------------------*/
+
+
+/*---------------------------------------------*/
+/*-------- Begin Get Hobby/AllHobbies ---------*/
+/*---------------------------------------------*/
+
+function allHobbies() {
+    let urlAll = url + 'allpersons';
+    fetch(urlAll)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let hobbiesArray = [];
+            jsondata.forEach(element => {
+                let obj = JSON.parse(JSON.stringify(element));
+                hobbiesArray.push(obj.hobbies);
+            });
+            fillHobbiesDropDownDiv(hobbiesArray)
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error: " + err); }
+        });
+}
+
+
+function fillHobbiesDropDownDiv(allhobbies) {
+    emptyDiv('allHobbies');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allHobbiesPTAG');
+
+    let selecttag = document.createElement('select');
+    selecttag.setAttribute('id', 'allHobbiesDropDownSelectTAG');
+    let optionstagDefault = document.createElement('option');
+    optionstagDefault.setAttribute('id', 'default');
+    optionstagDefault.setAttribute('selected', '');
+    optionstagDefault.setAttribute('hidden', '');
+    optionstagDefault.innerHTML = 'Select Hobby';
+    selecttag.appendChild(optionstagDefault);
+
+    dropDownData(allhobbies).forEach(hobby => {
+        let optionstag = document.createElement('option');
+        optionstag.setAttribute('id', hobby.replace(/ /g, ''));
+        optionstag.setAttribute('value', hobby);
+        optionstag.innerHTML = hobby;
+        selecttag.appendChild(optionstag);
+    })
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get Hobby';
+    buttontag.setAttribute('id', 'hobbiesDropDownButtonTAG');
+
+    let div = document.getElementById('allHobbies');
+    div.appendChild(selecttag);
+    div.appendChild(buttontag);
+    div.appendChild(ptag);
+
+    document.getElementById("hobbiesDropDownButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getHobbyByName();
+    });
+}
+
+function dropDownData(allhobbies) {
+    let hobbyNames = [];
+    allhobbies.forEach(element => {
+        element.forEach(hobby => {
+            hobbyNames.push(hobby.name);
+        })
+    })
+    let uniqueHobbyNames = Array.from(new Set(hobbyNames));
+    return uniqueHobbyNames;
+}
+
+function getHobbyByName() {
+    let selected = document.getElementById('allHobbiesDropDownSelectTAG');
+
+    let hobbyname = selected.options[selected.selectedIndex].value;
+    if (!hobbyname) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    }
+    else {
+        let urlHobby = url + 'hobby/' + hobbyname;
+        fetch(urlHobby)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                document.getElementById('allHobbiesPTAG').innerHTML = writeToPTagPrHobby(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function writeToPTagPrHobby(jsondata) {
+        let stringToWrite =
+        "<br>Hobby: " + jsondata['name']
+        + "<br>Description: " + jsondata['description'];
+    return stringToWrite;
+}
+
+function getAllPersonsWithHobbyByName() {
+    let selected = document.getElementById('allHobbiesDropDownSelectTAG');
+
+    let hobbyname = selected.options[selected.selectedIndex].value;
+    if (!hobbyname) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    }
+    else {
+        let urlHobby = url + '/hobby?hobby=' + hobbyname;
+        fetch(urlHobby)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let sortedData = sortPersonJSON(jsondata);
+            let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
+            let headdata = Object.keys(sortedData[0]);
+            tableHead(table, headdata);
+            tableData(table, sortedData);
+            fixTableHeaders();
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function fillViewAllPersonsWithHobbyDiv() {
+    emptyDiv('viewAllPersonsWithHobby');
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get All Users With Hobby';
+    buttontag.setAttribute('id', 'viewAllPersonsWithHobbyButtonTAG');
+
+    let tabletag = document.createElement('table');
+    tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
+
+    let div = document.getElementById('viewAllPersonsWithHobby');
+    div.appendChild(buttontag);
+    div.appendChild(tabletag);
+}
+
+/*---------------------------------------------*/
+/*--------- End Get Hobby/AllHobbies ----------*/
+/*---------------------------------------------*/
 
