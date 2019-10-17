@@ -413,7 +413,7 @@ function getHobbyByName() {
 
     let hobbyname = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
-        document.getElementById('allHobbiesPTAG').innerHTML = 'Type in a name'
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
     }
     else {
         let urlHobby = url + 'hobby/' + hobbyname;
@@ -443,7 +443,7 @@ function getAllPersonsWithHobbyByName() {
 
     let hobbyname = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
-        document.getElementById('allHobbiesPTAG').innerHTML = 'Type in a name'
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
     }
     else {
         let urlHobby = url + '/hobby?hobby=' + hobbyname;
@@ -547,7 +547,7 @@ function getCityByZipcode() {
 
     let zipcode = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
-        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Type in a zip'
+        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
     }
     else {
         let urlHobby = url + 'city/zip/' + zipcode;
