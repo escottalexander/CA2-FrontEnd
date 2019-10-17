@@ -412,8 +412,8 @@ function getHobbyByName() {
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
 
     let hobbyname = selected.options[selected.selectedIndex].value;
-    if (!hobbyname) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Type in a name'
     }
     else {
         let urlHobby = url + 'hobby/' + hobbyname;
@@ -442,8 +442,8 @@ function getAllPersonsWithHobbyByName() {
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
 
     let hobbyname = selected.options[selected.selectedIndex].value;
-    if (!hobbyname) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Type in a name'
     }
     else {
         let urlHobby = url + '/hobby?hobby=' + hobbyname;
@@ -536,11 +536,41 @@ function fillZipCodeDiv(allzips) {
 
     document.getElementById("viewZipCodeDataDropDownButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
-        getHobbyByName();
+        getCityByZipcode();
     });
 }
 
+function getCityByZipcode() {
+    let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
 
+    //city/zip/{zip}
+
+    let zipcode = selected.options[selected.selectedIndex].value;
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Type in a zip'
+    }
+    else {
+        let urlHobby = url + 'city/zip/' + zipcode;
+        fetch(urlHobby)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                document.getElementById('viewZipCodeDataPTAG').innerHTML = writeToPTagZip(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function writeToPTagZip(jsondata) {
+        let stringToWrite =
+        "<br>Zip Code: " + jsondata['zipCode']
+        + "<br>City: " + jsondata['city'];
+    return stringToWrite;
+}
 
 /*---------------------------------------------*/
 /*------------ End Zipcode Section ------------*/
