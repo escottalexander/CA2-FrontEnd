@@ -128,7 +128,7 @@ function get() {
     });
 
     function fillViewPersonWithDataDiv() {
-        emptyDiv('viewPersonWithData');
+        emptyTag('viewPersonWithData');
         let ptag = document.createElement('p');
         ptag.setAttribute('id', 'viewPersonWithDataPTAG');
 
@@ -137,11 +137,6 @@ function get() {
         inputtag.setAttribute('type', 'text');
         inputtag.setAttribute('placeholder', 'UserName');
 
-/*---- To clear the div of data ---*/
-function emptyTag(divID) {
-    let div = document.getElementById(divID);
-    div.innerHTML = "";
-}
         let buttontag = document.createElement('button');
         buttontag.innerHTML = 'Get User';
         buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
@@ -202,11 +197,12 @@ function emptyTag(divID) {
 /*---------------------------------------------*/
 
 /*---- To clear the div of data ---*/
-function emptyDiv(divID) {
+function emptyTag(divID) {
     let div = document.getElementById(divID);
     div.innerHTML = "";
 }
 
+/*---------------------------------------------*/
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
 
