@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
-        allUsersToPtag();
+        //allUsersToPtag();
         allUsersToTableTag();
     });
     document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
@@ -44,7 +44,7 @@ function handleHttpErrors(res) {
 /*---------------------------------------------*/
 
 function fillViewPersonWithDataDiv() {
-    emptyDiv('viewPersonWithData');
+    emptyTag('viewPersonWithData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewPersonWithDataPTAG');
 
@@ -64,7 +64,7 @@ function fillViewPersonWithDataDiv() {
 }
 
 /*---- To clear the div of data ---*/
-function emptyDiv(divID) {
+function emptyTag(divID) {
     let div = document.getElementById(divID);
     div.innerHTML = "";
 }
@@ -176,7 +176,7 @@ function createPersonOptions() {
 /*---------------------------------------------*/
 
 function fillViewAllPersonsWithDataDiv() {
-    emptyDiv('viewAllPersonsWithData');
+    emptyTag('viewAllPersonsWithData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewAllPersonsWithDataPTAG');
 
@@ -215,6 +215,7 @@ function allUsersToPtag() {
 }
 
 function allUsersToTableTag() {
+    emptyTag('viewAllPersonsWithDataTableTAG');
     let urlAll = url + 'allpersons';
     fetch(urlAll)
         .then(handleHttpErrors)
@@ -366,7 +367,7 @@ function allHobbies() {
 
 
 function fillHobbiesDropDownDiv(allhobbies) {
-    emptyDiv('allHobbies');
+    emptyTag('allHobbies');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'allHobbiesPTAG');
 
@@ -444,6 +445,7 @@ function writeToPTagPrHobby(jsondata) {
 }
 
 function getAllPersonsWithHobbyByName() {
+    emptyTag('viewAllPersonsWithHobbyTableTAG');
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
 
     let hobbyname = selected.options[selected.selectedIndex].value;
@@ -472,7 +474,7 @@ function getAllPersonsWithHobbyByName() {
 }
 
 function fillViewAllPersonsWithHobbyDiv() {
-    emptyDiv('viewAllPersonsWithHobby');
+    emptyTag('viewAllPersonsWithHobby');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'allPersonsWithHobbyPTAG');
 
@@ -513,7 +515,7 @@ function allZipcodes() {
 }
 
 function fillZipCodeDiv(allzips) {
-    emptyDiv('viewZipCodeData');
+    emptyTag('viewZipCodeData');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewZipCodeDataPTAG');
 
@@ -580,6 +582,7 @@ function writeToPTagZip(jsondata) {
 
 
 function allPersonsInCity() {
+    emptyTag('viewAllPersonsWithZipTableTAG');
     let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
     let zipcode = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
@@ -625,7 +628,7 @@ function allPersonsInCityInner(fetchedData) {
 }
 
 function fillViewAllPersonsWithZipDiv() {
-    emptyDiv('viewAllPersonsWithZip');
+    emptyTag('viewAllPersonsWithZip');
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'allPersonsWithZipPTAG');
 
