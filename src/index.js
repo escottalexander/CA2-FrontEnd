@@ -58,7 +58,7 @@ function navigate() {
         contentDiv.innerHTML = content;
         switch (fragment) {
             case "get": get(); break;
-            case "add": addPerson(); break;
+            case "add": add(); break;
 
         }
     });
@@ -210,12 +210,13 @@ function emptyTag(divID) {
 /*---------------------------------------------*/
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
-function addPerson() {
-    var output = document.getElementById("output");
-
-    var buttonAddSimple = document.getElementById("createSimplePerson");
-
-    buttonAddSimple.addEventListener("click", function () {
+function add() {
+    document.getElementById("createSimplePerson").addEventListener("click", function () {
+        addPersonSimple();
+    })
+}
+    function addPersonSimple(){
+        var output = document.getElementById("output");
         fetch(url + "create/person", createPersonOptions())
             .then(res => handleHttpErrors(res))
             .then(function (data) {
@@ -232,8 +233,7 @@ function addPerson() {
                 }
                 else { console.log("Network error"); }
             });
-    })
-
+    }
 
     function createPersonOptions() {
         var FirstName = document.getElementById("inputFirstName").value;
@@ -257,7 +257,7 @@ function addPerson() {
         console.log(options);
         return options;
     }
-}
+
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
 /*---------------------------------------------*/
