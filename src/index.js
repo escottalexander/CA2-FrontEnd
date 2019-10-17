@@ -1,29 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { isNullOrUndefined } from 'util';
 import { type } from 'os';
-document.addEventListener("DOMContentLoaded", function () {
-
-    /*----- Should be moved to NavBar function ----*/
-    fillViewAllPersonsWithDataDiv();
-    fillViewAllPersonsWithHobbyDiv();
-    fillViewAllPersonsWithZipDiv();
-    allHobbies();
-    allZipcodes()
-
-    document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
-        event.preventDefault();
-        //allUsersToPtag();
-        allUsersToTableTag();
-    });
-    document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
-        event.preventDefault();
-        getAllPersonsWithHobbyByName();
-    });
-    document.getElementById("viewAllPersonsWithZipButtonTAG").addEventListener('click', function (event) {
-        event.preventDefault();
-        allPersonsInCity();
-    });
-});
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
 // Our Cache - Stores the partial .HTML pages.
@@ -81,6 +58,7 @@ function navigate() {
         contentDiv.innerHTML = content;
         switch (fragment) {
             case "get": get(); break;
+            case "add": addPerson(); break;
 
         }
     });
@@ -116,82 +94,109 @@ function handleHttpErrors(res) {
 }
 
 /*---------------------------------------------*/
-/*---------- Begin Get Person By Name ---------*/
+/*------------ Begin All GET Calls ------------*/
 /*---------------------------------------------*/
-function get() {
 
+function get() {
     fillViewPersonWithDataDiv();
+    fillViewAllPersonsWithDataDiv();
+    fillViewAllPersonsWithHobbyDiv();
+    fillViewAllPersonsWithZipDiv();
+    allHobbies();
+    allZipcodes()
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
     });
+    document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        //allUsersToPtag();
+        allUsersToTableTag();
+    });
+    document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getAllPersonsWithHobbyByName();
+    });
+    document.getElementById("viewAllPersonsWithZipButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        allPersonsInCity();
+    });
+}
 
-    function fillViewPersonWithDataDiv() {
-        emptyTag('viewPersonWithData');
-        let ptag = document.createElement('p');
-        ptag.setAttribute('id', 'viewPersonWithDataPTAG');
+/*---------------------------------------------*/
+/*------------- End All GET Calls -------------*/
+/*---------------------------------------------*/
 
-        let inputtag = document.createElement('input');
-        inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
-        inputtag.setAttribute('type', 'text');
-        inputtag.setAttribute('placeholder', 'UserName');
+/*---------------------------------------------*/
+/*---------- Begin Get Person By Name ---------*/
+/*---------------------------------------------*/
 
-        let buttontag = document.createElement('button');
-        buttontag.innerHTML = 'Get User';
-        buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
+function fillViewPersonWithDataDiv() {
+    emptyTag('viewPersonWithData');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'viewPersonWithDataPTAG');
 
-        let div = document.getElementById('viewPersonWithData');
-        div.appendChild(inputtag);
-        div.appendChild(buttontag);
-        div.appendChild(ptag);
+    let inputtag = document.createElement('input');
+    inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
+    inputtag.setAttribute('type', 'text');
+    inputtag.setAttribute('placeholder', 'UserName');
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get User';
+    buttontag.setAttribute('id', 'viewPersonWithDataButtonTAG');
+
+    let div = document.getElementById('viewPersonWithData');
+    div.appendChild(inputtag);
+    div.appendChild(buttontag);
+    div.appendChild(ptag);
+}
+
+function singleuser() {
+    let username = document.getElementById('viewPersonWithDataInputTAG').value;
+    if (!username) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
     }
-
-    function singleuser() {
-        let username = document.getElementById('viewPersonWithDataInputTAG').value;
-        if (!username) {
-            document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
-        }
-        else {
-            let urlName = url + 'person/' + username;
-            fetch(urlName)
-                .then(handleHttpErrors)
-                .then(fetchedData => {
-                    document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
-                })
-                .catch(err => {
-                    if (err.status) {
-                        err.fullError.then(e => console.log(e.detail))
-                    }
-                    else { console.log("Network error"); }
-                });
-        }
-    }
-
-    function writeToPTagPrPerson(jsondata) {
-        let hobbies = '';
-        jsondata['hobbies'].forEach(element => {
-            hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
-        });
-        let phones = '';
-        jsondata['phones'].forEach(element => {
-            phones = phones + '<br>' + element.description + ': ' + element.number;
-        });
-
-        let stringToWrite =
-            "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
-            + "<br>e-mail: " + jsondata['email'];
-        if (!isNullOrUndefined(jsondata['address'])) {
-            stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
-                + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
-                + ' ' + jsondata['address']['cityInfo']['city'];
-        }
-        stringToWrite = stringToWrite
-            + "<br>Hobbies: " + hobbies
-            + "<br>Phones: " + phones;
-        return stringToWrite;
+    else {
+        let urlName = url + 'person/' + username;
+        fetch(urlName)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
     }
 }
+
+function writeToPTagPrPerson(jsondata) {
+    let hobbies = '';
+    jsondata['hobbies'].forEach(element => {
+        hobbies = hobbies + '<br>' + element.name + ' - ' + element.description;
+    });
+    let phones = '';
+    jsondata['phones'].forEach(element => {
+        phones = phones + '<br>' + element.description + ': ' + element.number;
+    });
+
+    let stringToWrite =
+        "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
+        + "<br>e-mail: " + jsondata['email'];
+    if (!isNullOrUndefined(jsondata['address'])) {
+        stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
+            + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
+            + ' ' + jsondata['address']['cityInfo']['city'];
+    }
+    stringToWrite = stringToWrite
+        + "<br>Hobbies: " + hobbies
+        + "<br>Phones: " + phones;
+    return stringToWrite;
+}
+
 /*---------------------------------------------*/
 /*----------- End Get Person By Name ----------*/
 /*---------------------------------------------*/
@@ -205,53 +210,54 @@ function emptyTag(divID) {
 /*---------------------------------------------*/
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
+function addPerson() {
+    var output = document.getElementById("output");
 
-var output = document.getElementById("output");
+    var buttonAddSimple = document.getElementById("createSimplePerson");
 
-var buttonAddSimple = document.getElementById("createSimplePerson");
+    buttonAddSimple.addEventListener("click", function () {
+        fetch(url + "create/person", createPersonOptions())
+            .then(res => handleHttpErrors(res))
+            .then(function (data) {
+                console.log(data);
+                output.innerHTML = "<p>Person created:</p><br>"
+                    + "<p>ID: " + data.id + "<br>"
+                    + "<p>First name: " + data.firstName + "<br>"
+                    + "<p>Last name: " + data.lastName + "<br>"
+                    + "<p>email: " + data.email + "<br>";
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+                }
+                else { console.log("Network error"); }
+            });
+    })
 
-buttonAddSimple.addEventListener("click", function () {
-    fetch(url + "create/person", createPersonOptions())
-        .then(res => handleHttpErrors(res))
-        .then(function (data) {
-            console.log(data);
-            output.innerHTML = "<p>Person created:</p><br>"
-                + "<p>ID: " + data.id + "<br>"
-                + "<p>First name: " + data.firstName + "<br>"
-                + "<p>Last name: " + data.lastName + "<br>"
-                + "<p>email: " + data.email + "<br>";
-        })
-        .catch(err => {
-            if (err.status) {
-                err.fullError.then(e => output.innerHTML = "Error:<br><br>")
-            }
-            else { console.log("Network error"); }
-        });
-})
 
-function createPersonOptions() {
-    var FirstName = document.getElementById("inputFirstName").value;
-    var LastName = document.getElementById("inputLastName").value;
-    var Email = document.getElementById("inputEmail").value;
-    var Method = "POST";
-    var data = {
-        firstName: FirstName,
-        lastName: LastName,
-        email: Email
+    function createPersonOptions() {
+        var FirstName = document.getElementById("inputFirstName").value;
+        var LastName = document.getElementById("inputLastName").value;
+        var Email = document.getElementById("inputEmail").value;
+        var Method = "POST";
+        var data = {
+            firstName: FirstName,
+            lastName: LastName,
+            email: Email
+        }
+
+        let options = {
+            method: Method,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        console.log(options);
+        return options;
     }
-
-    let options = {
-        method: Method,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }
-    console.log(options);
-    return options;
 }
-
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
 /*---------------------------------------------*/
@@ -327,7 +333,7 @@ function tableHead(table, headData) {
     for (let key of headData) {
         let th = document.createElement("th");
         let text = document.createTextNode(key);
-        th.id = key;
+        th.classList.add(key);
         th.appendChild(text);
         row.appendChild(th);
     }
@@ -371,14 +377,27 @@ function tableData(table, bodyData) {
 }
 
 function fixTableHeaders() {
-    document.getElementById("address").innerText = "Address";
-    document.getElementById("email").innerText = "E-mail";
-    document.getElementById("firstName").innerText = "Firstname";
-    document.getElementById("id").innerText = "ID";
-    document.getElementById("lastName").innerText = "Lastname";
-    document.getElementById("phones").innerText = "Phone numbers";
-    document.getElementById("hobbies").innerText = "Hobbies";
-
+    Array.from(document.getElementsByClassName("address")).forEach(element => {
+        element.innerText = "Address";
+    }); 
+    Array.from(document.getElementsByClassName("email")).forEach(element => {
+        element.innerText = "mail";
+    }); 
+    Array.from(document.getElementsByClassName("firstName")).forEach(element => {
+        element.innerText = "Firstname";
+    }); 
+    Array.from(document.getElementsByClassName("id")).forEach(element => {
+        element.innerText = "ID";
+    }); 
+    Array.from(document.getElementsByClassName("lastName")).forEach(element => {
+        element.innerText = "Lastname";
+    }); 
+    Array.from(document.getElementsByClassName("phones")).forEach(element => {
+        element.innerText = "Phone numbers";
+    }); 
+    Array.from(document.getElementsByClassName("hobbies")).forEach(element => {
+        element.innerText = "Hobbies";
+    }); 
 }
 
 /*---------------------------------------------*/
