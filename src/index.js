@@ -1,11 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { isNullOrUndefined } from 'util';
 document.addEventListener("DOMContentLoaded", function () {
-    /*---------- Begin Get Person By Name ---------*/
+
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
+    fillViewAllPersonsWithZipDiv();
     allHobbies();
     allZipcodes()
 
@@ -21,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         getAllPersonsWithHobbyByName();
+    });
+    document.getElementById("viewAllPersonsWithZipButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        allPersonsInCity();
     });
 });
 
@@ -432,7 +437,7 @@ function getHobbyByName() {
 }
 
 function writeToPTagPrHobby(jsondata) {
-        let stringToWrite =
+    let stringToWrite =
         "<br>Hobby: " + jsondata['name']
         + "<br>Description: " + jsondata['description'];
     return stringToWrite;
@@ -448,14 +453,14 @@ function getAllPersonsWithHobbyByName() {
     else {
         let urlHobby = url + '/hobby?hobby=' + hobbyname;
         fetch(urlHobby)
-        .then(handleHttpErrors)
-        .then(jsondata => {
-            let sortedData = sortPersonJSON(jsondata);
-            let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
-            let headdata = Object.keys(sortedData[0]);
-            tableHead(table, headdata);
-            tableData(table, sortedData);
-            fixTableHeaders();
+            .then(handleHttpErrors)
+            .then(jsondata => {
+                let sortedData = sortPersonJSON(jsondata);
+                let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
+                let headdata = Object.keys(sortedData[0]);
+                tableHead(table, headdata);
+                tableData(table, sortedData);
+                fixTableHeaders();
             })
             .catch(err => {
                 if (err.status) {
@@ -468,6 +473,9 @@ function getAllPersonsWithHobbyByName() {
 
 function fillViewAllPersonsWithHobbyDiv() {
     emptyDiv('viewAllPersonsWithHobby');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allPersonsWithHobbyPTAG');
+
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get All Users With Hobby';
     buttontag.setAttribute('id', 'viewAllPersonsWithHobbyButtonTAG');
@@ -476,6 +484,7 @@ function fillViewAllPersonsWithHobbyDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithHobby');
+    div.appendChild(ptag);
     div.appendChild(buttontag);
     div.appendChild(tabletag);
 }
@@ -526,7 +535,7 @@ function fillZipCodeDiv(allzips) {
     })
 
     let buttontag = document.createElement('button');
-    buttontag.innerHTML = 'Get Zipcode';
+    buttontag.innerHTML = 'Get City';
     buttontag.setAttribute('id', 'viewZipCodeDataDropDownButtonTAG');
 
     let div = document.getElementById('viewZipCodeData');
@@ -542,16 +551,13 @@ function fillZipCodeDiv(allzips) {
 
 function getCityByZipcode() {
     let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
-
-    //city/zip/{zip}
-
     let zipcode = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
         document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
     }
     else {
-        let urlHobby = url + 'city/zip/' + zipcode;
-        fetch(urlHobby)
+        let urlZip = url + 'city/zip/' + zipcode;
+        fetch(urlZip)
             .then(handleHttpErrors)
             .then(fetchedData => {
                 document.getElementById('viewZipCodeDataPTAG').innerHTML = writeToPTagZip(fetchedData);
@@ -566,11 +572,78 @@ function getCityByZipcode() {
 }
 
 function writeToPTagZip(jsondata) {
-        let stringToWrite =
+    let stringToWrite =
         "<br>Zip Code: " + jsondata['zipCode']
         + "<br>City: " + jsondata['city'];
     return stringToWrite;
 }
+
+
+function allPersonsInCity() {
+    let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
+    let zipcode = selected.options[selected.selectedIndex].value;
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
+    }
+    else {
+        let urlZip = url + 'city/zip/' + zipcode;
+        fetch(urlZip)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                allPersonsInCityInner(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function allPersonsInCityInner(fetchedData) {
+    let city = fetchedData['city'];
+    let zip = fetchedData['zipCode'];
+
+    let urlPersonsCity = url + 'city?zip=' + zip + '&city=' + city;
+    fetch(urlPersonsCity)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let sortedData = sortPersonJSON(jsondata);
+            let table = document.getElementById('viewAllPersonsWithZipTableTAG');
+            let headdata = Object.keys(sortedData[0]);
+            tableHead(table, headdata);
+            tableData(table, sortedData);
+            fixTableHeaders();
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error"); }
+        });
+}
+
+function fillViewAllPersonsWithZipDiv() {
+    emptyDiv('viewAllPersonsWithZip');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allPersonsWithZipPTAG');
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get All Users With Zip';
+    buttontag.setAttribute('id', 'viewAllPersonsWithZipButtonTAG');
+
+    let tabletag = document.createElement('table');
+    tabletag.setAttribute('id', 'viewAllPersonsWithZipTableTAG');
+
+    let div = document.getElementById('viewAllPersonsWithZip');
+    div.appendChild(ptag);
+    div.appendChild(buttontag);
+    div.appendChild(tabletag);
+}
+
+
+
 
 /*---------------------------------------------*/
 /*------------ End Zipcode Section ------------*/
