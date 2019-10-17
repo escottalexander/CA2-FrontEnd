@@ -76,9 +76,11 @@ function navigate() {
     var contentDiv = document.getElementById("content");
     // Get a reference to the fragment. We use substr(1) to remove the '#' hash from the start of the string. 
     var fragment = location.hash.substr(1);
-    // Set the content div innerHTML based on the fragment identifier.
+    // Set the content based on the fragment identifier.
     getContent(fragment, function (content) {
+        // Add the HTML to the Page first.
         contentDiv.innerHTML = content;
+        // Adds the JavaScript to the page now that the HTML is there to hook onto. 
         // ADD YOUR WRAP FUNCTIONS TO THIS SWITCH LIKE SO;
         // case "nameOfFragment": nameOfFunction(); break; 
         switch (fragment) {
