@@ -1,12 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { isNullOrUndefined } from 'util';
 document.addEventListener("DOMContentLoaded", function () {
-    /*---------- Begin Get Person By Name ---------*/
+
     /*----- Should be moved to NavBar function ----*/
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
+    fillViewAllPersonsWithZipDiv();
     allHobbies();
+    allZipcodes()
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -20,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("viewAllPersonsWithHobbyButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         getAllPersonsWithHobbyByName();
+    });
+    document.getElementById("viewAllPersonsWithZipButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        allPersonsInCity();
     });
 });
 
@@ -488,8 +494,8 @@ function getHobbyByName() {
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
 
     let hobbyname = selected.options[selected.selectedIndex].value;
-    if (!hobbyname) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
     }
     else {
         let urlHobby = url + 'hobby/' + hobbyname;
@@ -508,7 +514,7 @@ function getHobbyByName() {
 }
 
 function writeToPTagPrHobby(jsondata) {
-        let stringToWrite =
+    let stringToWrite =
         "<br>Hobby: " + jsondata['name']
         + "<br>Description: " + jsondata['description'];
     return stringToWrite;
@@ -518,20 +524,20 @@ function getAllPersonsWithHobbyByName() {
     let selected = document.getElementById('allHobbiesDropDownSelectTAG');
 
     let hobbyname = selected.options[selected.selectedIndex].value;
-    if (!hobbyname) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
     }
     else {
         let urlHobby = url + '/hobby?hobby=' + hobbyname;
         fetch(urlHobby)
-        .then(handleHttpErrors)
-        .then(jsondata => {
-            let sortedData = sortPersonJSON(jsondata);
-            let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
-            let headdata = Object.keys(sortedData[0]);
-            tableHead(table, headdata);
-            tableData(table, sortedData);
-            fixTableHeaders();
+            .then(handleHttpErrors)
+            .then(jsondata => {
+                let sortedData = sortPersonJSON(jsondata);
+                let table = document.getElementById('viewAllPersonsWithHobbyTableTAG');
+                let headdata = Object.keys(sortedData[0]);
+                tableHead(table, headdata);
+                tableData(table, sortedData);
+                fixTableHeaders();
             })
             .catch(err => {
                 if (err.status) {
@@ -544,6 +550,9 @@ function getAllPersonsWithHobbyByName() {
 
 function fillViewAllPersonsWithHobbyDiv() {
     emptyDiv('viewAllPersonsWithHobby');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allPersonsWithHobbyPTAG');
+
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get All Users With Hobby';
     buttontag.setAttribute('id', 'viewAllPersonsWithHobbyButtonTAG');
@@ -552,6 +561,7 @@ function fillViewAllPersonsWithHobbyDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithHobby');
+    div.appendChild(ptag);
     div.appendChild(buttontag);
     div.appendChild(tabletag);
 }
@@ -560,3 +570,156 @@ function fillViewAllPersonsWithHobbyDiv() {
 /*--------- End Get Hobby/AllHobbies ----------*/
 /*---------------------------------------------*/
 
+/*---------------------------------------------*/
+/*----------- Begin Zipcode Section -----------*/
+/*---------------------------------------------*/
+
+function allZipcodes() {
+    let urlAll = url + 'zip';
+    fetch(urlAll)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            fillZipCodeDiv(jsondata)
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error: " + err); }
+        });
+}
+
+function fillZipCodeDiv(allzips) {
+    emptyDiv('viewZipCodeData');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'viewZipCodeDataPTAG');
+
+    let selecttag = document.createElement('select');
+    selecttag.setAttribute('id', 'viewZipCodeDataDropDownSelectTAG');
+    let optionstagDefault = document.createElement('option');
+    optionstagDefault.setAttribute('id', 'default');
+    optionstagDefault.setAttribute('selected', '');
+    optionstagDefault.setAttribute('hidden', '');
+    optionstagDefault.innerHTML = 'Select Zip';
+    selecttag.appendChild(optionstagDefault);
+
+    allzips.forEach(zip => {
+        let optionstag = document.createElement('option');
+        optionstag.setAttribute('id', zip.replace(/ /g, '') + 'zip');
+        optionstag.setAttribute('value', zip);
+        optionstag.innerHTML = zip;
+        selecttag.appendChild(optionstag);
+    })
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get City';
+    buttontag.setAttribute('id', 'viewZipCodeDataDropDownButtonTAG');
+
+    let div = document.getElementById('viewZipCodeData');
+    div.appendChild(selecttag);
+    div.appendChild(buttontag);
+    div.appendChild(ptag);
+
+    document.getElementById("viewZipCodeDataDropDownButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getCityByZipcode();
+    });
+}
+
+function getCityByZipcode() {
+    let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
+    let zipcode = selected.options[selected.selectedIndex].value;
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
+    }
+    else {
+        let urlZip = url + 'city/zip/' + zipcode;
+        fetch(urlZip)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                document.getElementById('viewZipCodeDataPTAG').innerHTML = writeToPTagZip(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function writeToPTagZip(jsondata) {
+    let stringToWrite =
+        "<br>Zip Code: " + jsondata['zipCode']
+        + "<br>City: " + jsondata['city'];
+    return stringToWrite;
+}
+
+
+function allPersonsInCity() {
+    let selected = document.getElementById('viewZipCodeDataDropDownSelectTAG');
+    let zipcode = selected.options[selected.selectedIndex].value;
+    if (selected.options[selected.selectedIndex].id === 'default') {
+        document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
+    }
+    else {
+        let urlZip = url + 'city/zip/' + zipcode;
+        fetch(urlZip)
+            .then(handleHttpErrors)
+            .then(fetchedData => {
+                allPersonsInCityInner(fetchedData);
+            })
+            .catch(err => {
+                if (err.status) {
+                    err.fullError.then(e => console.log(e.detail))
+                }
+                else { console.log("Network error"); }
+            });
+    }
+}
+
+function allPersonsInCityInner(fetchedData) {
+    let city = fetchedData['city'];
+    let zip = fetchedData['zipCode'];
+
+    let urlPersonsCity = url + 'city?zip=' + zip + '&city=' + city;
+    fetch(urlPersonsCity)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            let sortedData = sortPersonJSON(jsondata);
+            let table = document.getElementById('viewAllPersonsWithZipTableTAG');
+            let headdata = Object.keys(sortedData[0]);
+            tableHead(table, headdata);
+            tableData(table, sortedData);
+            fixTableHeaders();
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error"); }
+        });
+}
+
+function fillViewAllPersonsWithZipDiv() {
+    emptyDiv('viewAllPersonsWithZip');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'allPersonsWithZipPTAG');
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get All Users With Zip';
+    buttontag.setAttribute('id', 'viewAllPersonsWithZipButtonTAG');
+
+    let tabletag = document.createElement('table');
+    tabletag.setAttribute('id', 'viewAllPersonsWithZipTableTAG');
+
+    let div = document.getElementById('viewAllPersonsWithZip');
+    div.appendChild(ptag);
+    div.appendChild(buttontag);
+    div.appendChild(tabletag);
+}
+
+
+/*---------------------------------------------*/
+/*------------ End Zipcode Section ------------*/
+/*---------------------------------------------*/
