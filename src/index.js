@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
     allHobbies();
+    allZipcodes()
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -487,6 +488,57 @@ function fillViewAllPersonsWithHobbyDiv() {
 /*----------- Begin Zipcode Section -----------*/
 /*---------------------------------------------*/
 
+function allZipcodes() {
+    let urlAll = url + 'zip';
+    fetch(urlAll)
+        .then(handleHttpErrors)
+        .then(jsondata => {
+            fillZipCodeDiv(jsondata)
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => console.log(e.detail))
+            }
+            else { console.log("Network error: " + err); }
+        });
+}
+
+function fillZipCodeDiv(allzips) {
+    emptyDiv('viewZipCodeData');
+    let ptag = document.createElement('p');
+    ptag.setAttribute('id', 'viewZipCodeDataPTAG');
+
+    let selecttag = document.createElement('select');
+    selecttag.setAttribute('id', 'viewZipCodeDataDropDownSelectTAG');
+    let optionstagDefault = document.createElement('option');
+    optionstagDefault.setAttribute('id', 'default');
+    optionstagDefault.setAttribute('selected', '');
+    optionstagDefault.setAttribute('hidden', '');
+    optionstagDefault.innerHTML = 'Select Zip';
+    selecttag.appendChild(optionstagDefault);
+
+    allzips.forEach(zip => {
+        let optionstag = document.createElement('option');
+        optionstag.setAttribute('id', zip.replace(/ /g, '') + 'zip');
+        optionstag.setAttribute('value', zip);
+        optionstag.innerHTML = zip;
+        selecttag.appendChild(optionstag);
+    })
+
+    let buttontag = document.createElement('button');
+    buttontag.innerHTML = 'Get Zipcode';
+    buttontag.setAttribute('id', 'viewZipCodeDataDropDownButtonTAG');
+
+    let div = document.getElementById('viewZipCodeData');
+    div.appendChild(selecttag);
+    div.appendChild(buttontag);
+    div.appendChild(ptag);
+
+    document.getElementById("viewZipCodeDataDropDownButtonTAG").addEventListener('click', function (event) {
+        event.preventDefault();
+        getHobbyByName();
+    });
+}
 
 
 
