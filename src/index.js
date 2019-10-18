@@ -106,6 +106,20 @@ function addCssToElementChildren(elementIdParent, element, cssClassArray) {
     });
 }
 
+function addCssToElementChildrenFromClass(elementClassParent, element, cssClassArray) {
+    let htmlParents = document.getElementsByClassName(elementClassParent)
+    Array.from(htmlParents).forEach(htmlParent => {
+        let htmlChild = htmlParent.querySelectorAll(element);
+        Array.from(htmlChild).forEach(element => {
+            cssClassArray.forEach(cssClass => {
+                element.classList.add(cssClass);
+            })
+        });
+    });
+
+
+}
+
 function addCssToElement(element, cssClassArray) {
     let htmlElement = document.querySelector(element);
     cssClassArray.forEach(cssClass => {
@@ -147,7 +161,7 @@ function get() {
         event.preventDefault();
         allPersonsInCity();
     });
-    addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+    addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
     addCssToElementChildren("content", "input", ["form-control"]);
 }
 
@@ -193,7 +207,7 @@ function singleuser() {
             })
             .catch(err => {
                 if (err.status) {
-                    err.fullError.then(e => document.getElementById('viewPersonWithDataPTAG').innerHTML =  "Error: " + e.detail)
+                    err.fullError.then(e => document.getElementById('viewPersonWithDataPTAG').innerHTML = "Error: " + e.detail)
                 }
                 else { console.log("Network error"); }
             });
@@ -497,7 +511,7 @@ function allHobbies() {
                 hobbiesArray.push(obj.hobbies);
             });
             fillHobbiesDropDownDiv(hobbiesArray);
-            addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
             addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
@@ -629,8 +643,8 @@ function fillViewAllPersonsWithHobbyDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithHobby');
-    div.appendChild(ptag);
     div.appendChild(buttontag);
+    div.appendChild(ptag);
     div.appendChild(tabletag);
 }
 
@@ -648,7 +662,7 @@ function allZipcodes() {
         .then(handleHttpErrors)
         .then(jsondata => {
             fillZipCodeDiv(jsondata);
-            addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
             addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
@@ -785,8 +799,8 @@ function fillViewAllPersonsWithZipDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithZipTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithZip');
-    div.appendChild(ptag);
     div.appendChild(buttontag);
+    div.appendChild(ptag);
     div.appendChild(tabletag);
 }
 
