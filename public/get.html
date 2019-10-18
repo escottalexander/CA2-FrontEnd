@@ -1,15 +1,16 @@
 <div class="accordion" id="accordionExample">
   <div class="card">
-    <div class="card-header" id="headingOne">
+    <div class="card-header positionRelative" id="headingOne">
+        <i class="fas fa-users imgHeaderAbsolute iconWhite"></i>
       <h2 class="mb-0">
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
-          aria-expanded="true" aria-controls="collapseOne"> <i class="fas fa-users"></i>
+          aria-expanded="true" aria-controls="collapseOne">
           Users
         </button>
       </h2>
     </div>
     <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-      <div class="card-body toStyle">
+      <div class="card-body toStyle caTwoFont">
 
         <div class="row container">
           <div id=viewPersonWithData></div>
@@ -21,16 +22,17 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header" id="headingTwo">
+    <div class="card-header positionRelative" id="headingTwo">
+        <i class="fas fa-icons imgHeaderAbsolute iconWhite"></i>
       <h2 class="mb-0">
         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
-          aria-expanded="false" aria-controls="collapseTwo"><i class="fas fa-theater-masks"></i>
+          aria-expanded="false" aria-controls="collapseTwo">
           Hobbies
         </button>
       </h2>
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-      <div class="card-body toStyle">
+      <div class="card-body toStyle caTwoFont">
         <div class="row container">
           <div id=allHobbies></div>
         </div>
@@ -41,16 +43,17 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header" id="headingThree">
+    <div class="card-header positionRelative" id="headingThree">
+        <i class="fas fa-map-marked-alt imgHeaderAbsolute iconWhite"></i>
       <h2 class="mb-0">
         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
-          aria-expanded="false" aria-controls="collapseThree"><i class="fas fa-city"></i>
-          Zipcode and city
+          aria-expanded="false" aria-controls="collapseThree">
+          Zipcodes & City
         </button>
       </h2>
     </div>
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-      <div class="card-body toStyle">
+      <div class="card-body toStyle caTwoFont">
         <div class="row container">
           <div id=viewZipCodeData></div>
         </div>
@@ -61,16 +64,17 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header" id="headingFour">
+    <div class="card-header positionRelative" id="headingFour">
+        <i class="fas fa-user-plus imgHeaderAbsolute iconWhite"></i>
       <h2 class="mb-0">
         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour"
-          aria-expanded="false" aria-controls="collapseFour"><i class="fas fa-user-plus"></i>
+          aria-expanded="false" aria-controls="collapseFour">
           Add
         </button>
       </h2>
     </div>
     <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-      <div class="card-body toStyle">
+      <div class="card-body toStyle caTwoFont">
         <div id=mainDiv>
           <div class="row container">
             <div id="addPersonSimple" class="form-group">
@@ -84,9 +88,10 @@
               <input id="inputEmail" type="email">
               <br>
               <button id="createSimplePerson" type="button">Create person</button>
+              <br>
+              <br>
+              <div id="output" class="mt-1"></div>
             </div>
-            <br>
-            <div id="output"></div>
           </div>
         </div>
       </div>

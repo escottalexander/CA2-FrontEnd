@@ -16,6 +16,7 @@ body {
 
 .card-header{
    background-color: #343a40;
+   padding-left: 40px;
 }
 
 .btn-link {
@@ -34,7 +35,7 @@ body {
    box-shadow: none;
 }
 
-.buttonimgrelative{
+.positionRelative{
    position: relative;
 }
 
@@ -44,12 +45,41 @@ body {
    left:8px;
 }
 
+.imgHeaderAbsolute{
+   position: absolute; 
+   top:24px; 
+   left:20px;
+}
+
+.imgButtonAbsolute{
+   position: absolute; 
+   top:8px; 
+   left:8px;
+}
+
+.buttonPaddingLeft{
+   padding-left:30px;
+}
+
+.buttonPaddingLeftTravis{  
+   padding-left:50px;
+}
+
 .buttonimgabsolutefavicon{
    position: absolute;
    top:10px; 
    left:10px;
 }
 
+.iconWhite{
+   color: white;
+}
+
+.caTwoFont{
+   /* font-family: 'Share Tech Mono', monospace; */
+   /* font-family: 'Major Mono Display', monospace; */
+   font-family: 'Source Code Pro', monospace;
+}
 /* Style the Navigation bar links   
 #navbar a {
    background-color: lightblue;
