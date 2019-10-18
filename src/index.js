@@ -83,8 +83,8 @@ function changeActiveNavbarElement() {
 }
 /* End of JavaScript code for dynamic navigation behavior */
 
-const url = 'https://maltemagnussen.com/CA2/api/search/';
-const testurl = 'http://localhost:8080/CA2/api/search/';
+const testurl = 'https://maltemagnussen.com/CA2/api/search/';
+const url = 'http://localhost:8080/CA2/api/search/';
 
 function handleHttpErrors(res) {
     if (!res.ok) {
@@ -129,26 +129,6 @@ function get() {
 /*------------- End All GET Calls -------------*/
 /*---------------------------------------------*/
 
-/*----------------------------------------*/
-/*----------- BEGIN DELETE PERSON --------*/
-/*----------------------------------------*/
-function deletePerson() {
-    alert("lets delete");
-}
-/*----------------------------------------*/
-/*----------- END DELETE PERSON ----------*/
-/*----------------------------------------*/
-
-/*----------------------------------------*/
-/*----------- BEGIN EDIT PERSON --------*/
-/*----------------------------------------*/
-function editPerson() {
-    alert("lets edit");
-}
-/*----------------------------------------*/
-/*----------- END EDIT PERSON ----------*/
-/*----------------------------------------*/
-
 /*---------------------------------------------*/
 /*---------- Begin Get Person By Name ---------*/
 /*---------------------------------------------*/
@@ -183,6 +163,7 @@ function singleuser() {
         fetch(urlName)
             .then(handleHttpErrors)
             .then(fetchedData => {
+                PersonInQuestion = fetchedData[0]; //is this bad practice?
                 document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
             })
             .catch(err => {
@@ -207,7 +188,7 @@ function addUpdateButtons() {
         btnEdit.innerHTML = 'Edit User';
         btnEdit.setAttribute('id', 'btnEdit');
         //Delete button
-        let btnDelete = document.createElement("button");
+        let btnDelete = document.createElement('button');
         btnDelete.innerHTML = 'Delete User';
         btnDelete.setAttribute('id', 'btnDelete');
 
@@ -223,7 +204,11 @@ function addUpdateButtons() {
         });
         document.getElementById("btnDelete").addEventListener('click', function (event) {
             event.preventDefault();
-            deletePerson();
+            if (PersonInQuestion !== null || PersonInQuestion !== undefined) {
+                deletePerson(PersonInQuestion.id);
+            } else {
+                console.log("Fetch didnt save data properly");
+            }
         });
     }
 }
@@ -251,6 +236,55 @@ function writeToPTagPrPerson(jsondata) {
         + "<br>Phones: " + phones;
     return stringToWrite;
 }
+
+let PersonInQuestion; //is this bad practice?
+/*----------------------------------------*/
+/*----------- BEGIN DELETE PERSON --------*/
+/*----------------------------------------*/
+function deletePerson(id) {
+    if (document.getElementById('deleteOutput')) document.getElementById('deleteOutput').outerHTML = ''; //reset
+    if (document.getElementById('errorOutput')) document.getElementById('errorOutput').outerHTML = ''; //reset
+    fetch(url + "person/delete/" + id, {
+        method: 'DELETE'
+    })
+        .then(res => handleHttpErrors(res))
+        .then(data => {
+            let div = document.getElementById('viewPersonWithData');
+            let deleteOutput = document.createElement('p')
+            deleteOutput.setAttribute('id', "deleteOutput");
+            deleteOutput.innerHTML = 'Deleted the following person succesfully! <br>' + writeToPTagPrPerson(data);
+            div.appendChild(deleteOutput);
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => {
+                    let errorOutput = document.createElement('p');
+                    errorOutput.setAttribute('id', 'errorOutput');
+                    errorOutput.innerHTML = '<br>ERROR:<br>' + JSON.stringify(e);
+                    document.getElementById('staticPTag').insertAdjacentElement('afterend', errorOutput);
+                })
+            }
+            else { console.log(err); }
+        });
+};
+/*----------------------------------------*/
+/*----------- END DELETE PERSON ----------*/
+/*----------------------------------------*/
+
+/*----------------------------------------*/
+/*----------- BEGIN EDIT PERSON --------*/
+/*----------------------------------------*/
+function generatePerson() {
+
+}
+
+function editPerson() {
+
+    alert("lets edit");
+}
+/*----------------------------------------*/
+/*----------- END EDIT PERSON ----------*/
+/*----------------------------------------*/
 
 /*---------------------------------------------*/
 /*----------- End Get Person By Name ----------*/
@@ -520,7 +554,7 @@ function allHobbies() {
         })
         .catch(err => {
             if (err.status) {
-                err.fullError.then(e => console.log(e.detail))
+                err.fullError.then(e => console.log(e))
             }
             else { console.log("Network error: " + err); }
         });
