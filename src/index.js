@@ -108,6 +108,7 @@ function get() {
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
         singleuser();
+        addUpdateButtons(); //BUG/TODO: Only works if you call correctly the first time, otherwise you have to press the button twice.
     });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -127,6 +128,26 @@ function get() {
 /*---------------------------------------------*/
 /*------------- End All GET Calls -------------*/
 /*---------------------------------------------*/
+
+/*----------------------------------------*/
+/*----------- BEGIN DELETE PERSON --------*/
+/*----------------------------------------*/
+function deletePerson() {
+    alert("lets delete");
+}
+/*----------------------------------------*/
+/*----------- END DELETE PERSON ----------*/
+/*----------------------------------------*/
+
+/*----------------------------------------*/
+/*----------- BEGIN EDIT PERSON --------*/
+/*----------------------------------------*/
+function editPerson() {
+    alert("lets edit");
+}
+/*----------------------------------------*/
+/*----------- END EDIT PERSON ----------*/
+/*----------------------------------------*/
 
 /*---------------------------------------------*/
 /*---------- Begin Get Person By Name ---------*/
@@ -154,8 +175,8 @@ function fillViewPersonWithDataDiv() {
 
 function singleuser() {
     let username = document.getElementById('viewPersonWithDataInputTAG').value;
-    if (!username) {
-        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name'
+    if (!username || !(username.includes(' '))) {
+        document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name (firstname + lastname)'
     }
     else {
         let urlName = url + 'person/' + username;
@@ -170,6 +191,40 @@ function singleuser() {
                 }
                 else { console.log("Network error"); }
             });
+    }
+}
+
+/**
+ * Adds edit/delete buttons to div only when a user has been fetched
+ */
+function addUpdateButtons() {
+    let output = document.getElementById('viewPersonWithDataPTAG');
+
+    if (output && !output.innerHTML.includes('Type in a name (firstname + lastname')) {
+        let div = document.getElementById('viewPersonWithData');
+        //Edit button
+        let btnEdit = document.createElement("button");
+        btnEdit.innerHTML = 'Edit User';
+        btnEdit.setAttribute('id', 'btnEdit');
+        //Delete button
+        let btnDelete = document.createElement("button");
+        btnDelete.innerHTML = 'Delete User';
+        btnDelete.setAttribute('id', 'btnDelete');
+
+        //Append to div-element
+        div.appendChild(btnEdit);
+        div.appendChild(btnDelete);
+        div.innerHTML += '<br><br>'; //spacing for next object
+
+        //Add event handlers to buttons
+        document.getElementById("btnEdit").addEventListener('click', function (event) {
+            event.preventDefault();
+            editPerson();
+        });
+        document.getElementById("btnDelete").addEventListener('click', function (event) {
+            event.preventDefault();
+            deletePerson();
+        });
     }
 }
 
@@ -201,6 +256,8 @@ function writeToPTagPrPerson(jsondata) {
 /*----------- End Get Person By Name ----------*/
 /*---------------------------------------------*/
 
+
+
 /*---- To clear the div of data ---*/
 function emptyTag(divID) {
     let div = document.getElementById(divID);
@@ -215,48 +272,48 @@ function add() {
         addPersonSimple();
     })
 }
-    function addPersonSimple(){
-        var output = document.getElementById("output");
-        fetch(url + "create/person", createPersonOptions())
-            .then(res => handleHttpErrors(res))
-            .then(function (data) {
-                console.log(data);
-                output.innerHTML = "<p>Person created:</p><br>"
-                    + "<p>ID: " + data.id + "<br>"
-                    + "<p>First name: " + data.firstName + "<br>"
-                    + "<p>Last name: " + data.lastName + "<br>"
-                    + "<p>email: " + data.email + "<br>";
-            })
-            .catch(err => {
-                if (err.status) {
-                    err.fullError.then(e => output.innerHTML = "Error:<br><br>")
-                }
-                else { console.log("Network error"); }
-            });
+function addPersonSimple() {
+    var output = document.getElementById("output");
+    fetch(url + "create/person", createPersonOptions())
+        .then(res => handleHttpErrors(res))
+        .then(function (data) {
+            console.log(data);
+            output.innerHTML = "<p>Person created:</p><br>"
+                + "<p>ID: " + data.id + "<br>"
+                + "<p>First name: " + data.firstName + "<br>"
+                + "<p>Last name: " + data.lastName + "<br>"
+                + "<p>email: " + data.email + "<br>";
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+            }
+            else { console.log("Network error"); }
+        });
+}
+
+function createPersonOptions() {
+    var FirstName = document.getElementById("inputFirstName").value;
+    var LastName = document.getElementById("inputLastName").value;
+    var Email = document.getElementById("inputEmail").value;
+    var Method = "POST";
+    var data = {
+        firstName: FirstName,
+        lastName: LastName,
+        email: Email
     }
 
-    function createPersonOptions() {
-        var FirstName = document.getElementById("inputFirstName").value;
-        var LastName = document.getElementById("inputLastName").value;
-        var Email = document.getElementById("inputEmail").value;
-        var Method = "POST";
-        var data = {
-            firstName: FirstName,
-            lastName: LastName,
-            email: Email
-        }
-
-        let options = {
-            method: Method,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
-        console.log(options);
-        return options;
+    let options = {
+        method: Method,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     }
+    console.log(options);
+    return options;
+}
 
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
@@ -379,25 +436,25 @@ function tableData(table, bodyData) {
 function fixTableHeaders() {
     Array.from(document.getElementsByClassName("address")).forEach(element => {
         element.innerText = "Address";
-    }); 
+    });
     Array.from(document.getElementsByClassName("email")).forEach(element => {
         element.innerText = "mail";
-    }); 
+    });
     Array.from(document.getElementsByClassName("firstName")).forEach(element => {
         element.innerText = "Firstname";
-    }); 
+    });
     Array.from(document.getElementsByClassName("id")).forEach(element => {
         element.innerText = "ID";
-    }); 
+    });
     Array.from(document.getElementsByClassName("lastName")).forEach(element => {
         element.innerText = "Lastname";
-    }); 
+    });
     Array.from(document.getElementsByClassName("phones")).forEach(element => {
         element.innerText = "Phone numbers";
-    }); 
+    });
     Array.from(document.getElementsByClassName("hobbies")).forEach(element => {
         element.innerText = "Hobbies";
-    }); 
+    });
 }
 
 /*---------------------------------------------*/
