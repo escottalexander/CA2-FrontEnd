@@ -443,7 +443,7 @@ function tableData(table, bodyData) {
             let cellValue = '';
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
-                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                        cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
                 else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
@@ -458,8 +458,11 @@ function tableData(table, bodyData) {
                     cellValue = cellValue.slice(0, -2);
                 }
             }
-            else {
+            else if(element[key]){
                 cellValue = element[key];
+            }
+            else{
+                cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
             cell.appendChild(text);
@@ -472,7 +475,7 @@ function fixTableHeaders() {
         element.innerText = "Address";
     });
     Array.from(document.getElementsByClassName("email")).forEach(element => {
-        element.innerText = "mail";
+        element.innerText = "E-mail";
     });
     Array.from(document.getElementsByClassName("firstName")).forEach(element => {
         element.innerText = "Firstname";
