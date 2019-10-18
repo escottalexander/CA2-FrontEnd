@@ -1,4 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.css'
+//import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap'
 import { isNullOrUndefined } from 'util';
 import { type } from 'os';
 
@@ -97,13 +98,21 @@ function handleHttpErrors(res) {
 /*----------------- Begin CSS -----------------*/
 /*---------------------------------------------*/
 
-function addCssToElementChildren(ElementIdParent, element, cssClassArray){
-    let htmlElementList = document.getElementById(ElementIdParent).querySelectorAll(element);
+function addCssToElementChildren(elementIdParent, element, cssClassArray) {
+    let htmlElementList = document.getElementById(elementIdParent).querySelectorAll(element);
     Array.from(htmlElementList).forEach(element => {
         cssClassArray.forEach(cssClass => {
             element.classList.add(cssClass);
         })
     });
+}
+
+function addCssToElement(element, cssClassArray) {
+    let htmlElement = document.querySelector(element);
+    cssClassArray.forEach(cssClass => {
+        htmlElement.classList.add(cssClass);
+    });
+
 }
 
 /*---------------------------------------------*/
@@ -139,9 +148,8 @@ function get() {
         event.preventDefault();
         allPersonsInCity();
     });
-    addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
-
-    // addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
+    addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+    addCssToElementChildren("content", "input", ["form-control"]);
 }
 
 /*---------------------------------------------*/
@@ -160,7 +168,7 @@ function fillViewPersonWithDataDiv() {
     let inputtag = document.createElement('input');
     inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
     inputtag.setAttribute('type', 'text');
-    inputtag.setAttribute('placeholder', 'UserName');
+    inputtag.setAttribute('placeholder', 'Name');
 
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get User';
@@ -186,7 +194,7 @@ function singleuser() {
             })
             .catch(err => {
                 if (err.status) {
-                    err.fullError.then(e => console.log(e.detail))
+                    err.fullError.then(e => document.getElementById('viewPersonWithDataPTAG').innerHTML =  "Error: " + e.detail)
                 }
                 else { console.log("Network error"); }
             });
@@ -234,6 +242,8 @@ function add() {
     document.getElementById("createSimplePerson").addEventListener("click", function () {
         addPersonSimple();
     })
+    addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
+    addCssToElementChildren("content", "input", ["form-control"]);
 }
 function addPersonSimple() {
     var output = document.getElementById("output");
@@ -288,6 +298,9 @@ function createPersonOptions() {
 
 function fillViewAllPersonsWithDataDiv() {
     emptyTag('viewAllPersonsWithData');
+    let divtag = document.createElement('div');
+    divtag.classList.add('tableDiv');
+
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewAllPersonsWithDataPTAG');
 
@@ -299,6 +312,7 @@ function fillViewAllPersonsWithDataDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithDataTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithData');
+    div.appendChild(divtag);
     div.appendChild(buttontag);
     div.appendChild(ptag);
     div.appendChild(tabletag);
@@ -337,7 +351,6 @@ function allUsersToTableTag() {
             tableHead(table, headdata);
             tableData(table, sortedData);
             fixTableHeaders();
-
         })
         .catch(err => {
             if (err.status) {
@@ -356,8 +369,10 @@ function tableHead(table, headData) {
         th.classList.add(key);
         th.appendChild(text);
         row.appendChild(th);
+        table.classList.add("table");
+        table.classList.add("table-hover");
+        head.classList.add("thead-dark");
     }
-
 }
 
 function tableData(table, bodyData) {
@@ -372,7 +387,7 @@ function tableData(table, bodyData) {
             let cellValue = '';
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
-                        cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
                 else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
@@ -387,10 +402,10 @@ function tableData(table, bodyData) {
                     cellValue = cellValue.slice(0, -2);
                 }
             }
-            else if(element[key]){
+            else if (element[key]) {
                 cellValue = element[key];
             }
-            else{
+            else {
                 cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
@@ -483,7 +498,8 @@ function allHobbies() {
                 hobbiesArray.push(obj.hobbies);
             });
             fillHobbiesDropDownDiv(hobbiesArray);
-            addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
+            addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+            addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
             if (err.status) {
@@ -633,7 +649,8 @@ function allZipcodes() {
         .then(handleHttpErrors)
         .then(jsondata => {
             fillZipCodeDiv(jsondata);
-            addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
+            addCssToElementChildren("mainDiv", "button", ["btn", "btn-dark"]);
+            addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
             if (err.status) {
