@@ -215,48 +215,48 @@ function add() {
         addPersonSimple();
     })
 }
-    function addPersonSimple(){
-        var output = document.getElementById("output");
-        fetch(url + "create/person", createPersonOptions())
-            .then(res => handleHttpErrors(res))
-            .then(function (data) {
-                console.log(data);
-                output.innerHTML = "<p>Person created:</p><br>"
-                    + "<p>ID: " + data.id + "<br>"
-                    + "<p>First name: " + data.firstName + "<br>"
-                    + "<p>Last name: " + data.lastName + "<br>"
-                    + "<p>email: " + data.email + "<br>";
-            })
-            .catch(err => {
-                if (err.status) {
-                    err.fullError.then(e => output.innerHTML = "Error:<br><br>")
-                }
-                else { console.log("Network error"); }
-            });
+function addPersonSimple() {
+    var output = document.getElementById("output");
+    fetch(url + "create/person", createPersonOptions())
+        .then(res => handleHttpErrors(res))
+        .then(function (data) {
+            console.log(data);
+            output.innerHTML = "<p>Person created:</p><br>"
+                + "<p>ID: " + data.id + "<br>"
+                + "<p>First name: " + data.firstName + "<br>"
+                + "<p>Last name: " + data.lastName + "<br>"
+                + "<p>email: " + data.email + "<br>";
+        })
+        .catch(err => {
+            if (err.status) {
+                err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+            }
+            else { console.log("Network error"); }
+        });
+}
+
+function createPersonOptions() {
+    var FirstName = document.getElementById("inputFirstName").value;
+    var LastName = document.getElementById("inputLastName").value;
+    var Email = document.getElementById("inputEmail").value;
+    var Method = "POST";
+    var data = {
+        firstName: FirstName,
+        lastName: LastName,
+        email: Email
     }
 
-    function createPersonOptions() {
-        var FirstName = document.getElementById("inputFirstName").value;
-        var LastName = document.getElementById("inputLastName").value;
-        var Email = document.getElementById("inputEmail").value;
-        var Method = "POST";
-        var data = {
-            firstName: FirstName,
-            lastName: LastName,
-            email: Email
-        }
-
-        let options = {
-            method: Method,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
-        console.log(options);
-        return options;
+    let options = {
+        method: Method,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     }
+    console.log(options);
+    return options;
+}
 
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
@@ -352,7 +352,7 @@ function tableData(table, bodyData) {
             let cellValue = '';
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
-                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                        cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
                 else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
@@ -367,8 +367,11 @@ function tableData(table, bodyData) {
                     cellValue = cellValue.slice(0, -2);
                 }
             }
-            else {
+            else if(element[key]){
                 cellValue = element[key];
+            }
+            else{
+                cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
             cell.appendChild(text);
@@ -379,25 +382,25 @@ function tableData(table, bodyData) {
 function fixTableHeaders() {
     Array.from(document.getElementsByClassName("address")).forEach(element => {
         element.innerText = "Address";
-    }); 
+    });
     Array.from(document.getElementsByClassName("email")).forEach(element => {
-        element.innerText = "mail";
-    }); 
+        element.innerText = "E-mail";
+    });
     Array.from(document.getElementsByClassName("firstName")).forEach(element => {
         element.innerText = "Firstname";
-    }); 
+    });
     Array.from(document.getElementsByClassName("id")).forEach(element => {
         element.innerText = "ID";
-    }); 
+    });
     Array.from(document.getElementsByClassName("lastName")).forEach(element => {
         element.innerText = "Lastname";
-    }); 
+    });
     Array.from(document.getElementsByClassName("phones")).forEach(element => {
         element.innerText = "Phone numbers";
-    }); 
+    });
     Array.from(document.getElementsByClassName("hobbies")).forEach(element => {
         element.innerText = "Hobbies";
-    }); 
+    });
 }
 
 /*---------------------------------------------*/
