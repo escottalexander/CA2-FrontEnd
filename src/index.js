@@ -94,6 +94,23 @@ function handleHttpErrors(res) {
 }
 
 /*---------------------------------------------*/
+/*----------------- Begin CSS -----------------*/
+/*---------------------------------------------*/
+
+function addCssToElementChildren(ElementIdParent, element, cssClassArray){
+    let htmlElementList = document.getElementById(ElementIdParent).querySelectorAll(element);
+    Array.from(htmlElementList).forEach(element => {
+        cssClassArray.forEach(cssClass => {
+            element.classList.add(cssClass);
+        })
+    });
+}
+
+/*---------------------------------------------*/
+/*------------------ End CSS ------------------*/
+/*---------------------------------------------*/
+
+/*---------------------------------------------*/
 /*------------ Begin All GET Calls ------------*/
 /*---------------------------------------------*/
 
@@ -122,6 +139,9 @@ function get() {
         event.preventDefault();
         allPersonsInCity();
     });
+    addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
+
+    // addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
 }
 
 /*---------------------------------------------*/
@@ -462,7 +482,8 @@ function allHobbies() {
                 let obj = JSON.parse(JSON.stringify(element));
                 hobbiesArray.push(obj.hobbies);
             });
-            fillHobbiesDropDownDiv(hobbiesArray)
+            fillHobbiesDropDownDiv(hobbiesArray);
+            addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
         })
         .catch(err => {
             if (err.status) {
@@ -611,7 +632,8 @@ function allZipcodes() {
     fetch(urlAll)
         .then(handleHttpErrors)
         .then(jsondata => {
-            fillZipCodeDiv(jsondata)
+            fillZipCodeDiv(jsondata);
+            addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
         })
         .catch(err => {
             if (err.status) {
