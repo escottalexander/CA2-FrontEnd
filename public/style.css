@@ -33,6 +33,23 @@ body {
    text-decoration: none;
    box-shadow: none;
 }
+
+.buttonimgrelative{
+   position: relative;
+}
+
+.buttonimgabsolute{
+   position: absolute; 
+   top:8px; 
+   left:8px;
+}
+
+.buttonimgabsolutefavicon{
+   position: absolute;
+   top:10px; 
+   left:10px;
+}
+
 /* Style the Navigation bar links   
 #navbar a {
    background-color: lightblue;

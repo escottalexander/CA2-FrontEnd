@@ -57,9 +57,7 @@ function navigate() {
     getContent(fragment, function (content) {
         contentDiv.innerHTML = content;
         switch (fragment) {
-            case "get": get(); break;
-            case "add": add(); break;
-
+            case "get": endpoints(); break;
         }
     });
     changeActiveNavbarElement();
@@ -136,7 +134,7 @@ function addCssToElement(element, cssClassArray) {
 /*------------ Begin All GET Calls ------------*/
 /*---------------------------------------------*/
 
-function get() {
+function endpoints() {
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
@@ -161,7 +159,13 @@ function get() {
         event.preventDefault();
         allPersonsInCity();
     });
-    addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
+    addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
+    addCssToElementChildren("content", "input", ["form-control"]);
+
+    document.getElementById("createSimplePerson").addEventListener("click", function () {
+        addPersonSimple();
+    })
+    addCssToElementChildren("content", "button", ["btn", "btn-outline-dark"]);
     addCssToElementChildren("content", "input", ["form-control"]);
 }
 
@@ -251,13 +255,6 @@ function emptyTag(divID) {
 /*---------------------------------------------*/
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
-function add() {
-    document.getElementById("createSimplePerson").addEventListener("click", function () {
-        addPersonSimple();
-    })
-    addCssToElementChildren("content", "button", ["btn", "btn-dark"]);
-    addCssToElementChildren("content", "input", ["form-control"]);
-}
 function addPersonSimple() {
     var output = document.getElementById("output");
     fetch(url + "create/person", createPersonOptions())
@@ -511,7 +508,7 @@ function allHobbies() {
                 hobbiesArray.push(obj.hobbies);
             });
             fillHobbiesDropDownDiv(hobbiesArray);
-            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
             addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
@@ -662,7 +659,7 @@ function allZipcodes() {
         .then(handleHttpErrors)
         .then(jsondata => {
             fillZipCodeDiv(jsondata);
-            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-dark"]);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
             addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {

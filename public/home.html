@@ -2,17 +2,29 @@
     <div class="card">
         <div class="card-header" id="headingOne">
             <h2 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
-                    aria-expanded="true" aria-controls="collapseOne">
+                <button class="btn btn-link buttonimgrelative" type="button" data-toggle="collapse"
+                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i
+                        class="fab fa-github fa-lg"></i>
                     GitHub and Build
                 </button>
             </h2>
         </div>
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-            <div class="card-body toStyle">
-                <a href="https://github.com/MalteMagnussen/CA2-FrontEnd" class="btn btn-dark" role="button">Frontend</a>
-                <a href="https://github.com/MalteMagnussen/CA2" class="btn btn-dark" role="button">Backend</a>
-                <a href="https://travis-ci.org/MalteMagnussen/CA2" class="btn btn-dark" role="button">Build</a>
+            <div class="card-body toStyle w-50">
+                <div class="mt-1 w-25">
+                    <a class="btn btn-outline-dark btn-block text-left"
+                        href="https://github.com/MalteMagnussen/CA2-FrontEnd" role="button"><i
+                            class="fab fa-github fa-lg buttonimgfavicon"></i> Frontend</a>
+                </div>
+                <div class="mt-1 w-25">
+                    <a class="btn btn-outline-dark btn-block text-left" href="https://github.com/MalteMagnussen/CA2"
+                        role="button"><i class="fab fa-github fa-lg buttonimgfavicon"></i> Backend</a>
+                </div>
+                <div class="mt-1 w-25">
+                    <a class="btn btn-outline-dark btn-block text-left buttonimgrelative"
+                        href="https://travis-ci.org/MalteMagnussen/CA2" role="button"><img class="buttonimgabsolute"
+                            src="https://travis-ci.org/MalteMagnussen/CA2.svg?branch=master" /> Build</a>
+                </div>
             </div>
         </div>
     </div>
@@ -20,15 +32,19 @@
         <div class="card-header" id="headingTwo">
             <h2 class="mb-0">
                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="false" aria-controls="collapseTwo">
+                    aria-expanded="false" aria-controls="collapseTwo"><img
+                        src="https://api.iconify.design/logos-swagger.svg" />
                     API
                 </button>
             </h2>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body toStyle">
-                <a href="https://www.maltemagnussen.com/CA2/openapi/" class="btn btn-dark" role="button">API
-                    Documentation</a>
+                <div class="mt-1 w-25">
+                    <a class="btn btn-outline-dark btn-block text-left buttonimgrelative"
+                        href="https://www.maltemagnussen.com/CA2/openapi/" role="button"><img class="buttonimgabsolute"
+                            src="https://api.iconify.design/logos-swagger.svg" />API Documentation</a>
+                </div>
             </div>
         </div>
     </div>
