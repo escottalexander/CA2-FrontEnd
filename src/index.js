@@ -107,8 +107,7 @@ function get() {
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
-        singleuser();
-        addUpdateButtons(); //BUG/TODO: Only works if you call correctly the first time, otherwise you have to press the button twice.
+        singleuser(); //also calls addUpdateButtons. Could have been done with callbacks, or promises here.
     });
     document.getElementById("viewAllPersonsWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -165,7 +164,7 @@ function singleuser() {
             .then(fetchedData => {
                 PersonInQuestion = fetchedData[0]; //is this bad practice?
                 document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
-            })
+            }).then(addUpdateButtons)
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
@@ -173,6 +172,7 @@ function singleuser() {
                 else { console.log("Network error"); }
             });
     }
+    return true;
 }
 
 /**
@@ -181,7 +181,7 @@ function singleuser() {
 function addUpdateButtons() {
     let output = document.getElementById('viewPersonWithDataPTAG');
 
-    if (output && !output.innerHTML.includes('Type in a name (firstname + lastname')) {
+    if (!output.innerHTML.includes('Type in a name (firstname + lastname')) {
         let div = document.getElementById('viewPersonWithData');
         //Edit button
         let btnEdit = document.createElement("button");
@@ -443,7 +443,7 @@ function tableData(table, bodyData) {
             let cellValue = '';
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
-                        cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
                 else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
@@ -458,10 +458,10 @@ function tableData(table, bodyData) {
                     cellValue = cellValue.slice(0, -2);
                 }
             }
-            else if(element[key]){
+            else if (element[key]) {
                 cellValue = element[key];
             }
-            else{
+            else {
                 cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
