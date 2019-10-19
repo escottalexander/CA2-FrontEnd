@@ -57,9 +57,7 @@ function navigate() {
     getContent(fragment, function (content) {
         contentDiv.innerHTML = content;
         switch (fragment) {
-            case "get": get(); break;
-            case "add": add(); break;
-
+            case "get": endpoints(); break;
         }
     });
     changeActiveNavbarElement();
@@ -94,10 +92,49 @@ function handleHttpErrors(res) {
 }
 
 /*---------------------------------------------*/
+/*----------------- Begin CSS -----------------*/
+/*---------------------------------------------*/
+
+function addCssToElementChildren(elementIdParent, element, cssClassArray) {
+    let htmlElementList = document.getElementById(elementIdParent).querySelectorAll(element);
+    Array.from(htmlElementList).forEach(element => {
+        cssClassArray.forEach(cssClass => {
+            element.classList.add(cssClass);
+        })
+    });
+}
+
+function addCssToElementChildrenFromClass(elementClassParent, element, cssClassArray) {
+    let htmlParents = document.getElementsByClassName(elementClassParent)
+    Array.from(htmlParents).forEach(htmlParent => {
+        let htmlChild = htmlParent.querySelectorAll(element);
+        Array.from(htmlChild).forEach(element => {
+            cssClassArray.forEach(cssClass => {
+                element.classList.add(cssClass);
+            })
+        });
+    });
+
+
+}
+
+function addCssToElement(element, cssClassArray) {
+    let htmlElement = document.querySelector(element);
+    cssClassArray.forEach(cssClass => {
+        htmlElement.classList.add(cssClass);
+    });
+
+}
+
+/*---------------------------------------------*/
+/*------------------ End CSS ------------------*/
+/*---------------------------------------------*/
+
+/*---------------------------------------------*/
 /*------------ Begin All GET Calls ------------*/
 /*---------------------------------------------*/
 
-function get() {
+function endpoints() {
     fillViewPersonWithDataDiv();
     fillViewAllPersonsWithDataDiv();
     fillViewAllPersonsWithHobbyDiv();
@@ -122,6 +159,14 @@ function get() {
         event.preventDefault();
         allPersonsInCity();
     });
+    addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
+    addCssToElementChildren("content", "input", ["form-control"]);
+
+    document.getElementById("createSimplePerson").addEventListener("click", function () {
+        addPersonSimple();
+    })
+    addCssToElementChildren("content", "button", ["btn", "btn-outline-dark"]);
+    addCssToElementChildren("content", "input", ["form-control"]);
 }
 
 /*---------------------------------------------*/
@@ -140,7 +185,7 @@ function fillViewPersonWithDataDiv() {
     let inputtag = document.createElement('input');
     inputtag.setAttribute('id', 'viewPersonWithDataInputTAG');
     inputtag.setAttribute('type', 'text');
-    inputtag.setAttribute('placeholder', 'UserName');
+    inputtag.setAttribute('placeholder', 'Name');
 
     let buttontag = document.createElement('button');
     buttontag.innerHTML = 'Get User';
@@ -166,7 +211,7 @@ function singleuser() {
             })
             .catch(err => {
                 if (err.status) {
-                    err.fullError.then(e => console.log(e.detail))
+                    err.fullError.then(e => document.getElementById('viewPersonWithDataPTAG').innerHTML = "Error: " + e.detail)
                 }
                 else { console.log("Network error"); }
             });
@@ -210,11 +255,6 @@ function emptyTag(divID) {
 /*---------------------------------------------*/
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
-function add() {
-    document.getElementById("createSimplePerson").addEventListener("click", function () {
-        addPersonSimple();
-    })
-}
 function addPersonSimple() {
     var output = document.getElementById("output");
     fetch(url + "create/person", createPersonOptions())
@@ -268,6 +308,9 @@ function createPersonOptions() {
 
 function fillViewAllPersonsWithDataDiv() {
     emptyTag('viewAllPersonsWithData');
+    let divtag = document.createElement('div');
+    divtag.classList.add('tableDiv');
+
     let ptag = document.createElement('p');
     ptag.setAttribute('id', 'viewAllPersonsWithDataPTAG');
 
@@ -279,6 +322,7 @@ function fillViewAllPersonsWithDataDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithDataTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithData');
+    div.appendChild(divtag);
     div.appendChild(buttontag);
     div.appendChild(ptag);
     div.appendChild(tabletag);
@@ -317,7 +361,6 @@ function allUsersToTableTag() {
             tableHead(table, headdata);
             tableData(table, sortedData);
             fixTableHeaders();
-
         })
         .catch(err => {
             if (err.status) {
@@ -336,8 +379,10 @@ function tableHead(table, headData) {
         th.classList.add(key);
         th.appendChild(text);
         row.appendChild(th);
+        table.classList.add("table");
+        table.classList.add("table-hover");
+        head.classList.add("thead-dark");
     }
-
 }
 
 function tableData(table, bodyData) {
@@ -352,7 +397,7 @@ function tableData(table, bodyData) {
             let cellValue = '';
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
-                        cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
+                    cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
                 }
                 else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
@@ -367,10 +412,10 @@ function tableData(table, bodyData) {
                     cellValue = cellValue.slice(0, -2);
                 }
             }
-            else if(element[key]){
+            else if (element[key]) {
                 cellValue = element[key];
             }
-            else{
+            else {
                 cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
@@ -462,7 +507,9 @@ function allHobbies() {
                 let obj = JSON.parse(JSON.stringify(element));
                 hobbiesArray.push(obj.hobbies);
             });
-            fillHobbiesDropDownDiv(hobbiesArray)
+            fillHobbiesDropDownDiv(hobbiesArray);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
+            addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
             if (err.status) {
@@ -593,8 +640,8 @@ function fillViewAllPersonsWithHobbyDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithHobbyTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithHobby');
-    div.appendChild(ptag);
     div.appendChild(buttontag);
+    div.appendChild(ptag);
     div.appendChild(tabletag);
 }
 
@@ -611,7 +658,9 @@ function allZipcodes() {
     fetch(urlAll)
         .then(handleHttpErrors)
         .then(jsondata => {
-            fillZipCodeDiv(jsondata)
+            fillZipCodeDiv(jsondata);
+            addCssToElementChildrenFromClass("toStyle", "button", ["btn", "btn-outline-dark"]);
+            addCssToElementChildren("content", "select", ["form-control"]);
         })
         .catch(err => {
             if (err.status) {
@@ -747,8 +796,8 @@ function fillViewAllPersonsWithZipDiv() {
     tabletag.setAttribute('id', 'viewAllPersonsWithZipTableTAG');
 
     let div = document.getElementById('viewAllPersonsWithZip');
-    div.appendChild(ptag);
     div.appendChild(buttontag);
+    div.appendChild(ptag);
     div.appendChild(tabletag);
 }
 
