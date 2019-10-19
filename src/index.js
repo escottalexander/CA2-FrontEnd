@@ -162,6 +162,7 @@ function singleuser() {
         fetch(urlName)
             .then(handleHttpErrors)
             .then(fetchedData => {
+                generatePerson(fetchedData[0], 'delete');
                 PersonInQuestion = fetchedData[0]; //is this bad practice?
                 document.getElementById('viewPersonWithDataPTAG').innerHTML = writeToPTagPrPerson(fetchedData[0]);
             }).then(addUpdateButtons)
@@ -238,6 +239,57 @@ function writeToPTagPrPerson(jsondata) {
 }
 
 let PersonInQuestion; //is this bad practice?
+function generatePerson(fetchData, type) {
+    let div = document.getElementById('viewPersonWithData');
+    let newDiv = document.createElement('div');
+    //Create div to display Person in
+    newDiv.setAttribute('id', 'updatePersonContainer') //needed?
+    div.appendChild(newDiv);
+    //newDiv.childNodes.setAttribute('hidden', true); //hmm -- ACTUALLY JUST HIDE THE WHOLE DIV? THEN APPEAR ON CLICK
+
+    let outputField;
+    // if (type === 'delete')
+    // {
+    //     outputField = 'p';
+    // }
+    // else if (type === 'edit')
+    // {
+    //     outputField = 'input';
+    // }
+    // else{
+    //     console.log("Incorrect type specified");
+    // }
+
+    // for(var k in fetchData) {
+    //     console.log('KEY: ' + k, fetchData[k]);
+    //  }
+
+    for(let key in fetchData) {
+        let value = fetchData[key];
+        //Create input fields (if edit)
+        let field = document.createElement('input');
+        field.setAttribute('id', `${key}` + 'Input')
+        field.setAttribute('value', value); //how to display value instead of [Object Object]?
+        //Create labels for input fields
+        let label = document.createElement('label');
+                label.innerHTML = key;
+        label.setAttribute('for', field.id);
+        
+
+        newDiv.appendChild(label);
+        newDiv.appendChild(field);
+        console.log("KEY: "+ key + ' | VALUE: ');
+        console.log(fetchData[key]);
+        //Need "U SURE U WANT TO DELETE?" ONCLICK --> FETCH DELETE
+     }
+
+    //console.log(fetchData['email']);
+    
+    //let deleteOutput2 = document.createElement('p')
+    // deleteOutput.setAttribute('id', "deleteOutput2");
+    // deleteOutput.innerHTML = 'Deleted the following person succesfully! <br>' + writeToPTagPrPerson(fetchData);
+    // div.appendChild(deleteOutput2);
+}
 /*----------------------------------------*/
 /*----------- BEGIN DELETE PERSON --------*/
 /*----------------------------------------*/
@@ -274,10 +326,6 @@ function deletePerson(id) {
 /*----------------------------------------*/
 /*----------- BEGIN EDIT PERSON --------*/
 /*----------------------------------------*/
-function generatePerson() {
-
-}
-
 function editPerson() {
 
     alert("lets edit");
