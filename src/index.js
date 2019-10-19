@@ -89,11 +89,20 @@ var inputPhoneDescription = document.getElementById("inputPhoneDescriptionCreate
 var inputAddressStreet = document.getElementById("inputAddressStreetCreateAll");
 var inputAddressInfo = document.getElementById("inputAddressInfoCreateAll");
 
+var controller = new AbortController();
+var signal = controller.signal;
+
 inputHobbyName.addEventListener("input", function(){
+    controller.abort();
+    controller = new AbortController();
+    signal = controller.signal;
     checkIfInputExists(false);
 })
 
 inputZipCode.addEventListener("input", function(){
+    controller.abort();
+    controller = new AbortController();
+    signal = controller.signal;
     checkIfInputExists(true);
 })
 
@@ -129,33 +138,36 @@ function checkIfInputExists(isCity) {
         }
         return;
     }
-    fetch(testurl + uriPart + checkValue.value)
-    .then(res => handleHttpErrors(res))
+    fetchCheckData(isCity, target, status, uriPart, checkValue);
+}
+
+function fetchCheckData(isCity, target, status, uriPart, checkValue) {
+    fetch(testurl + uriPart + checkValue.value, {signal})
+    .then(res => {return res.json();})
     .then(function(data) {
         console.log(data);
-        let output;
-        if (isCity)
-        {
-            output = data.city;
-        } else {
-            output = data.description;
-        }
-        if (data.name != null || data.city)
-        {
-            target.innerText = "";
-            target.value = "";
-            status.innerHTML = "-- Existing ✓ --";
-            target.innerText = output;
-            target.value = output;
-            lastExisted = true;
-            if (!target.hasAttribute("disabled"))
+        if (data.city || data.description) {
+            let output;
+            if (isCity)
             {
-                target.setAttribute("disabled", "true");
+                output = data.city;
+            } else {
+                output = data.description;
             }
-        }
-    })
-    .catch(err => {
-        if(err.status){
+            if (data.name != null || data.city)
+            {
+                target.innerText = "";
+                target.value = "";
+                status.innerHTML = "-- Existing ✓ --";
+                target.innerText = output;
+                target.value = output;
+                lastExisted = true;
+                if (!target.hasAttribute("disabled"))
+                {
+                    target.setAttribute("disabled", "true");
+                }
+            }
+        } else {
             //If we end up here it means that no hobby/city with the given name/zipcode was found
             if (target.hasAttribute("disabled"))
             {
@@ -169,30 +181,32 @@ function checkIfInputExists(isCity) {
                 lastExisted = false;
             }
         }
-        else{console.log("Network error");
-        }
+    })
+    .catch(err => {
+        console.log("Request was canceled");
     });
 }
 
 buttonCreateAll.addEventListener("click", function(){
     fetch(testurl + "create-all", createAllOptions())
-    .then(res => handleHttpErrors(res))
+    .then(res => {return res.json();})
     .then(function(data){
-        outputCreateAll.innerHTML = 
-        "First name: " + data.firstName + "<br>" + "Last name: " + data.lastName + "<br>" +
-        "Email: " + data.email + "<br>" + "Address<br>Street: " + data.address.street + "<br>" +
-        "Additional inforamtion: " + data.address.additionalInfo + "<br>" + "City" + "<br>" + 
-        "Name: " + data.address.cityInfo.city + "<br>" + "Zipcode: " + data.address.cityInfo.zipCode +
-        "<br>" + "Hobby" + "<br>" + "Name: " + data.hobbies[0].name + "<br>" + "Description: " +
-        data.hobbies[0].description;
+        console.log(data);
+        if (data.firstName) {
+            outputCreateAll.innerHTML = 
+            "First name: " + data.firstName + "<br>" + "Last name: " + data.lastName + "<br>" +
+            "Email: " + data.email + "<br>" + "Address<br>Street: " + data.address.street + "<br>" +
+            "Additional inforamtion: " + data.address.additionalInfo + "<br>" + "City" + "<br>" + 
+            "Name: " + data.address.cityInfo.city + "<br>" + "Zipcode: " + data.address.cityInfo.zipCode +
+            "<br>" + "Hobby" + "<br>" + "Name: " + data.hobbies[0].name + "<br>" + "Description: " +
+            data.hobbies[0].description;
+        } else {
+            outputCreateAll.innerHTML = "Error:<br><br>Status: " 
+            + data.code + "<br>" + data.message;
+        }
     })
     .catch(err => {
-        if(err.status){
-            err.fullError.then(e => outputCreateAll.innerHTML = "Error:<br><br>Status: " 
-            + e.code + "<br>" + e.message)
-        }
-        else{console.log("Network error");
-        }
+        console.log("Network error");
     });
 })
 
