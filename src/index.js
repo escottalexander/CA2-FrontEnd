@@ -22,7 +22,7 @@ buttonAddSimple.addEventListener("click", function(){
     fetch(url + "create/person", createPersonOptions())
     .then(res => handleHttpErrors(res))
     .then(function(data) {
-        console.log(data);
+        console.log("Create Person Simple:\n" + data);
         outputPersonSimple.innerHTML = "<p>Person created:</p><br>"
         + "<p>ID: " + data.id + "<br>"
         + "<p>First name: " + data.firstName + "<br>"
@@ -71,23 +71,29 @@ function createPersonOptions(){
 
 var outputCreateAll = document.getElementById("outputCreateAll");
 
-var buttonCreateAll = document.getElementById("createAll");
+var buttonCreateAll = document.getElementById("buttonCreateAll");
 
-var hobbyName = document.getElementById("inputHobbyNameCreateAll");
-var hobbyDescription = document.getElementById("inputHobbyDescriptionCreateAll");
+var inputHobbyName = document.getElementById("inputHobbyNameCreateAll");
+var inputHobbyDescription = document.getElementById("inputHobbyDescriptionCreateAll");
 var hobbyStatus = document.getElementById("hobbyStatus");
 
-var zipCode = document.getElementById("inputCityZipCreateAll");
-var cityName = document.getElementById("inputCityNameCreateAll");
+var inputZipCode = document.getElementById("inputCityZipCreateAll");
+var inputCityName = document.getElementById("inputCityNameCreateAll");
 var cityStatus = document.getElementById("cityStatus");
 
+var inputFirstName = document.getElementById("inputFirstNameCreateAll");
+var inputLastName = document.getElementById("inputLastNameCreateAll");
+var inputEmail = document.getElementById("inputEmailCreateAll");
+var inputPhone = document.getElementById("inputPhoneCreateAll");
+var inputPhoneDescription = document.getElementById("inputPhoneDescriptionCreateAll");
+var inputAddressStreet = document.getElementById("inputAddressStreetCreateAll");
+var inputAddressInfo = document.getElementById("inputAddressInfoCreateAll");
 
-
-hobbyName.addEventListener("input", function(){
+inputHobbyName.addEventListener("input", function(){
     checkIfInputExists(false);
 })
 
-zipCode.addEventListener("input", function(){
+inputZipCode.addEventListener("input", function(){
     checkIfInputExists(true);
 })
 
@@ -101,13 +107,13 @@ function checkIfInputExists(isCity) {
     var status;
     var uriPart;
     if (isCity) {
-        checkValue = zipCode;
-        target = cityName;
+        checkValue = inputZipCode;
+        target = inputCityName;
         status = cityStatus;
         uriPart = "city/zip/";
     } else {
-        checkValue = hobbyName;
-        target = hobbyDescription;
+        checkValue = inputHobbyName;
+        target = inputHobbyDescription;
         status = hobbyStatus;
         uriPart = "hobby/";
     }
@@ -169,9 +175,75 @@ function checkIfInputExists(isCity) {
 }
 
 buttonCreateAll.addEventListener("click", function(){
-    outputCreateAll.innerHTML = hobbyDescription.value;
+    fetch(testurl + "create-all", createAllOptions())
+    .then(res => handleHttpErrors(res))
+    .then(function(data){
+        outputCreateAll.innerHTML = 
+        "First name: " + data.firstName + "<br>" + "Last name: " + data.lastName + "<br>" +
+        "Email: " + data.email + "<br>" + "Address<br>Street: " + data.address.street + "<br>" +
+        "Additional inforamtion: " + data.address.additionalInfo + "<br>" + "City" + "<br>" + 
+        "Name: " + data.address.cityInfo.city + "<br>" + "Zipcode: " + data.address.cityInfo.zipCode +
+        "<br>" + "Hobby" + "<br>" + "Name: " + data.hobbies[0].name + "<br>" + "Description: " +
+        data.hobbies[0].description;
+    })
+    .catch(err => {
+        if(err.status){
+            err.fullError.then(e => outputCreateAll.innerHTML = "Error:<br><br>Status: " 
+            + e.code + "<br>" + e.message)
+        }
+        else{console.log("Network error");
+        }
+    });
 })
 
+function createAllOptions(){
+    var hobby = {
+        name : inputHobbyName.value,
+        description : inputHobbyDescription.value
+    }
+
+    var hobbies = []
+    hobbies[0] = hobby;
+
+    var phone = {
+        number : inputPhone.value,
+        description : inputPhoneDescription.value
+    }
+
+    var phones = []
+    phones[0] = phone;
+
+    var cityInfo = {
+        zipCode : inputZipCode.value,
+        city : inputCityName.value
+    }
+
+    var address = {
+        street : inputAddressStreet.value,
+        additionalInfo : inputAddressInfo.value,
+        cityInfo
+    }
+
+    var data = {
+        firstName : inputFirstName.value,
+        lastName : inputLastName.value,
+        email : inputEmail.value,
+        hobbies,
+        phones,
+        address
+    }
+    
+    let options = {
+        method: "POST", //change to PUT if needed
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+    console.log(options);
+    return options;
+}
 
 /*---------------------------------------------*/
 /*-------------- End  Create All --------------*/
