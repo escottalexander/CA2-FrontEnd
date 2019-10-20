@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import { isNullOrUndefined } from 'util';
-import { type } from 'os';
+import isNullOrUndefined from 'util';
+import type from 'os';
 
 /* The JavaScript Code for Navigation Dynamic Behavior */
 // Our Cache - Stores the partial .HTML pages.
@@ -57,13 +57,18 @@ function navigate() {
     getContent(fragment, function (content) {
         contentDiv.innerHTML = content;
         switch (fragment) {
-            case "get": get(); break;
-            case "add": add(); break;
+            case "get":
+                get();
+                break;
+            case "add":
+                add();
+                break;
 
         }
     });
     changeActiveNavbarElement();
 }
+
 function changeActiveNavbarElement() {
     var btnContainer = document.getElementById("navbarNav");
     // Get all items with class="nav-item" inside the container
@@ -88,7 +93,10 @@ const url = 'http://localhost:8080/CA2/api/search/';
 
 function handleHttpErrors(res) {
     if (!res.ok) {
-        return Promise.reject({ status: res.status, fullError: res.json() })
+        return Promise.reject({
+            status: res.status,
+            fullError: res.json()
+        })
     }
     return res.json();
 }
@@ -156,8 +164,7 @@ function singleuser() {
     let username = document.getElementById('viewPersonWithDataInputTAG').value;
     if (!username || !(username.includes(' '))) {
         document.getElementById('viewPersonWithDataPTAG').innerHTML = 'Type in a name (firstname + lastname)'
-    }
-    else {
+    } else {
         let urlName = url + 'person/' + username;
         fetch(urlName)
             .then(handleHttpErrors)
@@ -169,8 +176,9 @@ function singleuser() {
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
+                } else {
+                    console.log("Network error");
                 }
-                else { console.log("Network error"); }
             });
     }
     return true;
@@ -225,16 +233,16 @@ function writeToPTagPrPerson(jsondata) {
     });
 
     let stringToWrite =
-        "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName']
-        + "<br>e-mail: " + jsondata['email'];
+        "<br>Firstname: " + jsondata['firstName'] + ' ' + jsondata['lastName'] +
+        "<br>e-mail: " + jsondata['email'];
     if (!isNullOrUndefined(jsondata['address'])) {
-        stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', '
-            + jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode']
-            + ' ' + jsondata['address']['cityInfo']['city'];
+        stringToWrite = stringToWrite + "<br>Address: " + jsondata['address']['street'] + ', ' +
+            jsondata['address']['additionalInfo'] + ', ' + jsondata['address']['cityInfo']['zipCode'] +
+            ' ' + jsondata['address']['cityInfo']['city'];
     }
-    stringToWrite = stringToWrite
-        + "<br>Hobbies: " + hobbies
-        + "<br>Phones: " + phones;
+    stringToWrite = stringToWrite +
+        "<br>Hobbies: " + hobbies +
+        "<br>Phones: " + phones;
     return stringToWrite;
 }
 
@@ -264,27 +272,82 @@ function generatePerson(fetchData, type) {
     //     console.log('KEY: ' + k, fetchData[k]);
     //  }
 
-    for(let key in fetchData) {
-        let value = fetchData[key];
-        //Create input fields (if edit)
-        let field = document.createElement('input');
-        field.setAttribute('id', `${key}` + 'Input')
-        field.setAttribute('value', value); //how to display value instead of [Object Object]?
-        //Create labels for input fields
-        let label = document.createElement('label');
-                label.innerHTML = key;
-        label.setAttribute('for', field.id);
-        
+    for (let key in fetchData) {
+        if (key.includes('id')) return; //we do not allow users to see/edit IDs
 
-        newDiv.appendChild(label);
-        newDiv.appendChild(field);
-        console.log("KEY: "+ key + ' | VALUE: ');
-        console.log(fetchData[key]);
+        if (typeof fetchData[key] === 'object') { //If we have a nested object
+            Object.keys(fetchData[key]).forEach(key2 => {
+                if (key2.includes('id')) return; //we do not allow users to see/edit IDs
+
+                if (typeof fetchData[key][key2] === 'object') { //If we have a nested, nested object
+                    console.log("NEST NEST");
+
+                    Object.keys(fetchData[key][key2]).forEach(key3 => {
+                        if (key3.includes('id')) return; //we do not allow users to see/edit IDs
+                        console.log(fetchData[key][key2]);
+                        console.log(fetchData[key][key2][key3]);
+                        console.log(key3);
+                        //Create fields
+                        let field = document.createElement('input');
+                        field.setAttribute('id', `${key}` + `${key2}` + `${key3}` + 'Input')
+                        field.setAttribute('value', fetchData[key][key2][key3]);
+                        //Create labels for input fields
+                        let label = document.createElement('label');
+                        label.innerHTML = `${key} ` + `${key3}`;
+                        label.setAttribute('for', field.id);
+                        //Add to DOM
+                        newDiv.appendChild(document.createElement('br'));
+                        newDiv.appendChild(label);
+                        newDiv.appendChild(document.createElement('br'));
+                        newDiv.appendChild(field);
+                    })
+                } else {
+                    //Create fields
+                    let field = document.createElement('input');
+                    field.setAttribute('id', `${key}` + `${key2}` + 'Input')
+                    field.setAttribute('value', fetchData[key][key2]);
+                    //Create labels for input fields
+                    let label = document.createElement('label');
+                    label.innerHTML = key2;
+                    label.setAttribute('for', field.id);
+                    //Add to DOM
+                    newDiv.appendChild(document.createElement('br'));
+                    newDiv.appendChild(label);
+                    newDiv.appendChild(document.createElement('br'));
+                    newDiv.appendChild(field);
+                    // console.log(key);
+                    // console.log("KEY: " + key2); // logs the key
+                    // console.log(fetchData[key][key2]);
+                    // console.log("---");
+                    // console.log(fetchData[key2]) // logs the key's value
+                }
+            })
+        } else {
+            //Create fields
+            let field = document.createElement('input');
+            field.setAttribute('id', `${key}` + 'Input')
+            field.setAttribute('value', fetchData[key]);
+            //Create labels for input fields
+            let label = document.createElement('label');
+            label.innerHTML = key;
+            label.setAttribute('for', field.id);
+            //Add to DOM
+            newDiv.appendChild(document.createElement('br'));
+            newDiv.appendChild(label);
+            newDiv.appendChild(document.createElement('br'));
+            newDiv.appendChild(field);
+        }
+
+
+
+
+        // console.log("KEY: "+ key + ' | VALUE: ');
+        // console.log(fetchData[key]);
         //Need "U SURE U WANT TO DELETE?" ONCLICK --> FETCH DELETE
-     }
+    }
 
     //console.log(fetchData['email']);
-    
+
     //let deleteOutput2 = document.createElement('p')
     // deleteOutput.setAttribute('id', "deleteOutput2");
     // deleteOutput.innerHTML = 'Deleted the following person succesfully! <br>' + writeToPTagPrPerson(fetchData);
@@ -297,8 +360,8 @@ function deletePerson(id) {
     if (document.getElementById('deleteOutput')) document.getElementById('deleteOutput').outerHTML = ''; //reset
     if (document.getElementById('errorOutput')) document.getElementById('errorOutput').outerHTML = ''; //reset
     fetch(url + "person/delete/" + id, {
-        method: 'DELETE'
-    })
+            method: 'DELETE'
+        })
         .then(res => handleHttpErrors(res))
         .then(data => {
             let div = document.getElementById('viewPersonWithData');
@@ -315,8 +378,9 @@ function deletePerson(id) {
                     errorOutput.innerHTML = '<br>ERROR:<br>' + JSON.stringify(e);
                     document.getElementById('staticPTag').insertAdjacentElement('afterend', errorOutput);
                 })
+            } else {
+                console.log(err);
             }
-            else { console.log(err); }
         });
 };
 /*----------------------------------------*/
@@ -354,23 +418,25 @@ function add() {
         addPersonSimple();
     })
 }
+
 function addPersonSimple() {
     var output = document.getElementById("output");
     fetch(url + "create/person", createPersonOptions())
         .then(res => handleHttpErrors(res))
         .then(function (data) {
             console.log(data);
-            output.innerHTML = "<p>Person created:</p><br>"
-                + "<p>ID: " + data.id + "<br>"
-                + "<p>First name: " + data.firstName + "<br>"
-                + "<p>Last name: " + data.lastName + "<br>"
-                + "<p>email: " + data.email + "<br>";
+            output.innerHTML = "<p>Person created:</p><br>" +
+                "<p>ID: " + data.id + "<br>" +
+                "<p>First name: " + data.firstName + "<br>" +
+                "<p>Last name: " + data.lastName + "<br>" +
+                "<p>email: " + data.email + "<br>";
         })
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+            } else {
+                console.log("Network error");
             }
-            else { console.log("Network error"); }
         });
 }
 
@@ -439,8 +505,9 @@ function allUsersToPtag() {
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e.detail))
+            } else {
+                console.log("Network error: " + err);
             }
-            else { console.log("Network error: " + err); }
         });
 }
 
@@ -461,8 +528,9 @@ function allUsersToTableTag() {
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e.detail))
+            } else {
+                console.log("Network error: " + err);
             }
-            else { console.log("Network error: " + err); }
         });
 }
 
@@ -492,24 +560,20 @@ function tableData(table, bodyData) {
             if (typeof element[key] === 'object') {
                 if (key === 'address') {
                     cellValue = obj.address.street + ', ' + obj.address.cityInfo.zipCode + ' ' + obj.address.cityInfo.city;
-                }
-                else if (key === 'hobbies') {
+                } else if (key === 'hobbies') {
                     obj.hobbies.forEach(hobby => {
                         cellValue = cellValue + hobby.name + ', ';
                     });
                     cellValue = cellValue.slice(0, -2);
-                }
-                else if (key === 'phones') {
+                } else if (key === 'phones') {
                     obj.phones.forEach(phone => {
                         cellValue = cellValue + phone.description + ': ' + phone.number + ', ';
                     });
                     cellValue = cellValue.slice(0, -2);
                 }
-            }
-            else if (element[key]) {
+            } else if (element[key]) {
                 cellValue = element[key];
-            }
-            else {
+            } else {
                 cellValue = cellValue;
             }
             let text = document.createTextNode(cellValue);
@@ -606,8 +670,9 @@ function allHobbies() {
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e))
+            } else {
+                console.log("Network error: " + err);
             }
-            else { console.log("Network error: " + err); }
         });
 }
 
@@ -666,8 +731,7 @@ function getHobbyByName() {
     let hobbyname = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
         document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
-    }
-    else {
+    } else {
         let urlHobby = url + 'hobby/' + hobbyname;
         fetch(urlHobby)
             .then(handleHttpErrors)
@@ -677,16 +741,17 @@ function getHobbyByName() {
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
+                } else {
+                    console.log("Network error");
                 }
-                else { console.log("Network error"); }
             });
     }
 }
 
 function writeToPTagPrHobby(jsondata) {
     let stringToWrite =
-        "<br>Hobby: " + jsondata['name']
-        + "<br>Description: " + jsondata['description'];
+        "<br>Hobby: " + jsondata['name'] +
+        "<br>Description: " + jsondata['description'];
     return stringToWrite;
 }
 
@@ -697,8 +762,7 @@ function getAllPersonsWithHobbyByName() {
     let hobbyname = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
         document.getElementById('allHobbiesPTAG').innerHTML = 'Select a hobby name'
-    }
-    else {
+    } else {
         let urlHobby = url + '/hobby?hobby=' + hobbyname;
         fetch(urlHobby)
             .then(handleHttpErrors)
@@ -713,8 +777,9 @@ function getAllPersonsWithHobbyByName() {
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
+                } else {
+                    console.log("Network error");
                 }
-                else { console.log("Network error"); }
             });
     }
 }
@@ -755,8 +820,9 @@ function allZipcodes() {
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e.detail))
+            } else {
+                console.log("Network error: " + err);
             }
-            else { console.log("Network error: " + err); }
         });
 }
 
@@ -802,8 +868,7 @@ function getCityByZipcode() {
     let zipcode = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
         document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
-    }
-    else {
+    } else {
         let urlZip = url + 'city/zip/' + zipcode;
         fetch(urlZip)
             .then(handleHttpErrors)
@@ -813,16 +878,17 @@ function getCityByZipcode() {
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
+                } else {
+                    console.log("Network error");
                 }
-                else { console.log("Network error"); }
             });
     }
 }
 
 function writeToPTagZip(jsondata) {
     let stringToWrite =
-        "<br>Zip Code: " + jsondata['zipCode']
-        + "<br>City: " + jsondata['city'];
+        "<br>Zip Code: " + jsondata['zipCode'] +
+        "<br>City: " + jsondata['city'];
     return stringToWrite;
 }
 
@@ -833,8 +899,7 @@ function allPersonsInCity() {
     let zipcode = selected.options[selected.selectedIndex].value;
     if (selected.options[selected.selectedIndex].id === 'default') {
         document.getElementById('viewZipCodeDataPTAG').innerHTML = 'Select a zipcode'
-    }
-    else {
+    } else {
         let urlZip = url + 'city/zip/' + zipcode;
         fetch(urlZip)
             .then(handleHttpErrors)
@@ -844,8 +909,9 @@ function allPersonsInCity() {
             .catch(err => {
                 if (err.status) {
                     err.fullError.then(e => console.log(e.detail))
+                } else {
+                    console.log("Network error");
                 }
-                else { console.log("Network error"); }
             });
     }
 }
@@ -868,8 +934,9 @@ function allPersonsInCityInner(fetchedData) {
         .catch(err => {
             if (err.status) {
                 err.fullError.then(e => console.log(e.detail))
+            } else {
+                console.log("Network error");
             }
-            else { console.log("Network error"); }
         });
 }
 
