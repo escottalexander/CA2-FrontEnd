@@ -399,6 +399,7 @@ function fetchCheckData(isCity, target, status, uriPart, checkValue) {
             }
         } else {
             //If we end up here it means that no hobby/city with the given name/zipcode was found
+            status.innerHTML = "-- New --";
             if (target.hasAttribute("disabled")) {
                 target.removeAttribute("disabled");
             }
