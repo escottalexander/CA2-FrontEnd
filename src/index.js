@@ -95,6 +95,7 @@ function handleHttpErrors(res) {
 /*----------------- Begin CSS -----------------*/
 /*---------------------------------------------*/
 
+
 function addCssToElementChildren(elementIdParent, element, cssClassArray) {
     let htmlElementList = document.getElementById(elementIdParent).querySelectorAll(element);
     Array.from(htmlElementList).forEach(element => {
@@ -114,8 +115,6 @@ function addCssToElementChildrenFromClass(elementClassParent, element, cssClassA
             })
         });
     });
-
-
 }
 
 function addCssToElement(element, cssClassArray) {
@@ -140,7 +139,13 @@ function endpoints() {
     fillViewAllPersonsWithHobbyDiv();
     fillViewAllPersonsWithZipDiv();
     allHobbies();
-    allZipcodes()
+    allZipcodes();
+
+    document.getElementById("buttonCreateAll").addEventListener("click", createAll);
+
+    document.getElementById("inputCityZipCreateAll").addEventListener("input", actZipCode);
+
+    document.getElementById("inputHobbyNameCreateAll").addEventListener("input", actHobbyName);
 
     document.getElementById("viewPersonWithDataButtonTAG").addEventListener('click', function (event) {
         event.preventDefault();
@@ -256,7 +261,7 @@ function emptyTag(divID) {
 /*---------- Begin Add Person Simple ----------*/
 /*---------------------------------------------*/
 function addPersonSimple() {
-    var output = document.getElementById("output");
+    var output = document.getElementById("outputPersonSimple");
     fetch(url + "create/person", createPersonOptions())
         .then(res => handleHttpErrors(res))
         .then(function (data) {
@@ -269,16 +274,19 @@ function addPersonSimple() {
         })
         .catch(err => {
             if (err.status) {
-                err.fullError.then(e => output.innerHTML = "Error:<br><br>")
+                err.fullError.then(e => output.innerHTML = "Error:<br><br>Status: "
+                + e.code + "<br>" + e.message)
             }
-            else { console.log("Network error"); }
+            else {
+                console.log("Network error");
+            }
         });
 }
 
 function createPersonOptions() {
-    var FirstName = document.getElementById("inputFirstName").value;
-    var LastName = document.getElementById("inputLastName").value;
-    var Email = document.getElementById("inputEmail").value;
+    var FirstName = document.getElementById("inputFirstNamePersonSimple").value;
+    var LastName = document.getElementById("inputLastNamePersonSimple").value;
+    var Email = document.getElementById("inputEmailPersonSimple").value;
     var Method = "POST";
     var data = {
         firstName: FirstName,
@@ -300,6 +308,213 @@ function createPersonOptions() {
 
 /*---------------------------------------------*/
 /*----------- End Add Person Simple -----------*/
+/*---------------------------------------------*/
+
+/*---------------------------------------------*/
+/*------------- Begin  Create All -------------*/
+/*---------------------------------------------*/
+
+var controller = new AbortController();
+var signal = controller.signal;
+
+function actHobbyName() {
+    controller.abort();
+    controller = new AbortController();
+    signal = controller.signal;
+    checkIfInputExists(false);
+}
+
+function actZipCode() {
+    controller.abort();
+    controller = new AbortController();
+    signal = controller.signal;
+    checkIfInputExists(true);
+}
+
+var lastExisted = false;
+function checkIfInputExists(isCity) {
+    //Data from DOM
+    var inputHobbyName = document.getElementById("inputHobbyNameCreateAll");
+    var inputHobbyDescription = document.getElementById("inputHobbyDescriptionCreateAll");
+    var hobbyStatus = document.getElementById("hobbyStatus");
+
+    var inputZipCode = document.getElementById("inputCityZipCreateAll");
+    var inputCityName = document.getElementById("inputCityNameCreateAll");
+    var cityStatus = document.getElementById("cityStatus");
+
+    //Variables based on boolean isCity
+    //If isCity then the function is being used to check if a city exists
+    //If not then the function is being used to check if a hobby exists
+    var checkValue;
+    var target;
+    var status;
+    var uriPart;
+    if (isCity) {
+        checkValue = inputZipCode;
+        target = inputCityName;
+        status = cityStatus;
+        uriPart = "city/zip/";
+    } else {
+        checkValue = inputHobbyName;
+        target = inputHobbyDescription;
+        status = hobbyStatus;
+        uriPart = "hobby/";
+    }
+
+    //End of variables
+
+    if (checkValue.value == null || checkValue.value === "") {
+        target.innerText = "";
+        target.value = "";
+        if (!target.hasAttribute("disabled")) {
+            target.setAttribute("disabled", "true");
+        }
+        return;
+    }
+    fetchCheckData(isCity, target, status, uriPart, checkValue);
+}
+
+function fetchCheckData(isCity, target, status, uriPart, checkValue) {
+    fetch(url + uriPart + checkValue.value, { signal })
+    .then(res => { return res.json(); })
+    .then(function (data) {
+        console.log(data);
+        if (data.city || data.description) {
+            let output;
+            if (isCity) {
+                output = data.city;
+            } else {
+                output = data.description;
+            }
+            if (data.name != null || data.city) {
+                target.innerText = "";
+                target.value = "";
+                status.innerHTML = "-- Existing ✓ --";
+                target.innerText = output;
+                target.value = output;
+                lastExisted = true;
+                if (!target.hasAttribute("disabled")) {
+                    target.setAttribute("disabled", "true");
+                }
+            }
+        } else {
+            //If we end up here it means that no hobby/city with the given name/zipcode was found
+            if (target.hasAttribute("disabled")) {
+                target.removeAttribute("disabled");
+            }
+            if (lastExisted) {
+                target.innerText = "";
+                target.value = "";
+                status.innerHTML = "-- New --";
+                lastExisted = false;
+            }
+        }
+    })
+    .catch(err => {
+        console.log("Request was canceled");
+    });
+}
+
+function createAll() {
+    //Output div
+    var outputCreateAll = document.getElementById("outputCreateAll");
+
+    fetch(url + "create-all", createAllOptions("POST"))
+    .then(res => handleHttpErrors(res))
+    .then(function (data) {
+        console.log(data);
+        outputCreateAll.innerHTML =
+            "ID: " + data.id + "<br>" +
+            "First name: " + data.firstName + "<br>" + "Last name: " + data.lastName + "<br>" +
+            "Email: " + data.email + "<br>" + "Address<br>Street: " + data.address.street + "<br>" +
+            "Additional inforamtion: " + data.address.additionalInfo + "<br>" + "City" + "<br>" +
+            "Name: " + data.address.cityInfo.city + "<br>" + "Zipcode: " + data.address.cityInfo.zipCode +
+            "<br>" + "Hobby" + "<br>" + "Name: " + data.hobbies[0].name + "<br>" + "Description: " +
+            data.hobbies[0].description;
+    })
+    .catch(err => {
+        if (err.status) {
+            err.fullError.then(e => outputCreateAll.innerHTML = "Error:<br><br>Status: "
+            + e.code + "<br>" + e.message)
+        }
+        else {
+            console.log("Network error");
+        }
+    });
+}
+
+//This function could be converted to a UTIL function and moved to the UTIL category 
+function createAllOptions(METHOD) {
+    //Data from DOM
+    
+    var inputFirstName = document.getElementById("inputFirstNameCreateAll");
+    var inputLastName = document.getElementById("inputLastNameCreateAll");
+    var inputEmail = document.getElementById("inputEmailCreateAll");
+    var inputPhone = document.getElementById("inputPhoneCreateAll");
+    var inputPhoneDescription = document.getElementById("inputPhoneDescriptionCreateAll");
+    var inputAddressStreet = document.getElementById("inputAddressStreetCreateAll");
+    var inputAddressInfo = document.getElementById("inputAddressInfoCreateAll");
+
+    var inputHobbyName = document.getElementById("inputHobbyNameCreateAll");
+    var inputHobbyDescription = document.getElementById("inputHobbyDescriptionCreateAll");
+
+    var inputZipCode = document.getElementById("inputCityZipCreateAll");
+    var inputCityName = document.getElementById("inputCityNameCreateAll");
+
+    var hobby = {
+        name: inputHobbyName.value,
+        description: inputHobbyDescription.value
+    }
+
+    var hobbies = []
+    hobbies[0] = hobby;
+
+    var phone = {
+        number: inputPhone.value,
+        description: inputPhoneDescription.value
+    }
+    if (!phone.number)
+    {
+        phone.number = -1;
+    }
+
+    var phones = []
+    phones[0] = phone;
+
+    var cityInfo = {
+        zipCode: inputZipCode.value,
+        city: inputCityName.value
+    }
+
+    var address = {
+        street: inputAddressStreet.value,
+        additionalInfo: inputAddressInfo.value,
+        cityInfo
+    }
+
+    var data = {
+        firstName: inputFirstName.value,
+        lastName: inputLastName.value,
+        email: inputEmail.value,
+        hobbies,
+        phones,
+        address
+    }
+
+    let options = {
+        method: METHOD,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+    console.log(options);
+    return options;
+}
+
+/*---------------------------------------------*/
+/*-------------- End  Create All --------------*/
 /*---------------------------------------------*/
 
 /*---------------------------------------------*/
